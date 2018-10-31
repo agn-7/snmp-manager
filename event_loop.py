@@ -1,16 +1,26 @@
 import asyncio
 
+from easydict import EasyDict as edict
+
+
 async def read(config):
+    config = edict(config)
+    
     try:
-        pass
+        print(config.oid)
     except:
         pass
     finally:
-        await asyncio.sleep(config.interval)
+        await asyncio.sleep(config.time)
 
 
-async def event_loop():
-    pass
+def event_loop(configs):
+    loop = asyncio.get_event_loop()
+
+    for conf in configs:
+        asyncio.ensure_future(read(conf))
+
+    return loop
 
 
 async def multiple_tasks(configurations):
@@ -19,10 +29,11 @@ async def multiple_tasks(configurations):
     loop = asyncio.get_event_loop()
 
     for conf in configurations:
+        print(1)
         input_coroutines.append(read(conf))
         res = await asyncio.gather(*input_coroutines, return_exceptions=True)
 
-        asyncio.ensure_future(read(conf))
+        # asyncio.ensure_future(read(conf))
 
     if res is not None and loop is not None:
         return res, loop
@@ -40,16 +51,13 @@ def run_forever():
 
 if __name__ == '__main__':
 
+    snmp_configurations = [
+        {'time': 2, 'oid': '1.3.6.3.2.4'},
+        {'time': 1, 'oid': '1.3.6.3.5.8'},
+    ]  # TODO :: DUMMY
+    loop = event_loop(snmp_configurations)
+    
     try:
-        snmp_configurations = [
-            {'time': 2, 'oid': '1.3.6.3.2.4'},
-            {'time': 1, 'oid': '1.3.6.3.5.8'},
-        ]  # TODO :: DUMMY
-        tasks, loop = multiple_tasks(snmp_configurations)
-
-        while True:
-            loop.run_until_complete(tasks)
-
         '''Or this approach instead of above while.'''
         loop.run_forever()
 
