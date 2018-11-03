@@ -1,4 +1,5 @@
 import asyncio
+import uvloop
 
 from easydict import EasyDict as edict
 
@@ -15,6 +16,7 @@ async def read(config):
 
 
 def event_loop(configs):
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())  # TODO
     loop = asyncio.get_event_loop()
 
     for conf in configs:
@@ -49,8 +51,8 @@ def run_forever():
     while True:
         run_once()
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     snmp_configurations = [
         {'time': 2, 'oid': '1.3.6.3.2.4'},
         {'time': 1, 'oid': '1.3.6.3.5.8'},
@@ -58,7 +60,6 @@ if __name__ == '__main__':
     loop = event_loop(snmp_configurations)
     
     try:
-        '''Or this approach instead of above while.'''
         loop.run_forever()
 
     except KeyboardInterrupt:
