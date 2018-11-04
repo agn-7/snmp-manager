@@ -67,13 +67,23 @@ class Getter(object):
 
             if sock:
                 print('Before recv')
-                configs = sock.recv_json()
-                print('After recv')
-                '''Get the Battery-Monitoring json configs.'''
-                time.sleep(1e-1)
-                print('BM Configurations received.')
-                self.store_config_file(configs)
-                print('BM Config stored in the config.json file.')
+
+                try:
+                    configs = sock.recv_json(flags=zmq.NOBLOCK)  # TODO :: NOBLOCK.
+                    print('After recv')
+                    '''Get the Battery-Monitoring json configs.'''
+                    time.sleep(1e-1)
+                    print('BM Configurations received.')
+                    self.store_config_file(configs)
+                    print('BM Config stored in the config.json file.')
+
+                except zmq.ZMQError as e:
+
+                    if e.errno == zmq.EAGAIN:
+                        print('state changed since poll event')
+
+                    else:
+                        print("RECV Error: %s" % zmq.strerror(e.errno))
 
             else:
                 print('An error occurred in ZMQ socket creation.')
@@ -116,7 +126,7 @@ class Getter(object):
             print('Waiting for json configs ...')
 
             if sock:
-                configs = sock.recv_json()
+                configs = sock.recv_json(flags=zmq.NOBLOCK)
                 '''Get the Battery-Monitoring json configs.'''
                 time.sleep(1e-1)
 
