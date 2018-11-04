@@ -2,6 +2,7 @@ from threading import Thread
 
 from zmq_listener import Getter
 from collector import BatteryMonitoringReader
+from event_loop import EventLoop
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -17,7 +18,7 @@ class SNMP(Getter):
         thread_.daemon = True
         thread_.start()
 
-        BatteryMonitoringReader().run_forever()
+        EventLoop().run_forever()
 
         thread_.join()
 

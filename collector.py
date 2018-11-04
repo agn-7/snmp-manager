@@ -16,7 +16,7 @@ __copyright__ = "Copyright 2018, Planet Earth"
 logger = Logging().sentry_logger()
 
 
-class BatteryMonitoringReader():
+class SNMPReader():
     def __init__(self):
         pass
 

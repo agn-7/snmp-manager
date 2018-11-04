@@ -2,6 +2,8 @@ import asyncio
 import uvloop
 
 from logger import Logging
+from read_configuration import get_config
+from collector import SNMPReader
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -11,7 +13,8 @@ logger = Logging().sentry_logger()
 
 class EventLoop(object):
     def __init__(self):
-        pass
+        self.loop = None
+        self.snmp_reader = SNMPReader()
 
     def init_loop(self, configs):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -21,10 +24,29 @@ class EventLoop(object):
 
         for conf in configs:
             asyncio.ensure_future(
-                self.read(oid=conf['oid'], time=conf['time'])
+                self.snmp_reader.read(oid=conf['oid'], time=conf['time'])
             )
 
         return loop
+
+    def run_forever(self):
+        configs = get_config()
+
+        if configs:
+            loop = self.init_loop(configs)
+
+            try:
+                loop.run_forever()
+
+            except KeyboardInterrupt:
+                pass
+
+            finally:
+                print("Closing Loop")
+                loop.close()
+
+        else:
+            raise NotImplementedError()
 
 
 if __name__ == '__main__':

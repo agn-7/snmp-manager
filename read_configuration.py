@@ -10,7 +10,7 @@ logger = Logging().sentry_logger()
 
 def get_config():
     """
-    Reading the stored BM Json configuration file.
+    Reading the stored SNMP Json configuration file.
     :return: SNMP configuration Json.
     """
     configs = None
