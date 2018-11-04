@@ -1,64 +1,51 @@
 import asyncio
 import uvloop
 
-from easydict import EasyDict as edict
+from logger import Logging
+
+__author__ = 'aGn'
+__copyright__ = "Copyright 2018, Planet Earth"
+
+logger = Logging().sentry_logger()
 
 
-async def read(config):
-    config = edict(config)
-    
-    try:
-        print(config.oid)
-    except:
+class EventLoop(object):
+    def __init__(self):
         pass
-    finally:
-        await asyncio.sleep(config.time)
 
+    async def read(self, **kwargs):
+        oid = kwargs.get('oid', '0.0.0.0.0.0')
+        time = kwargs.get('time', 1)
 
-def event_loop(configs):
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())  # TODO
-    loop = asyncio.get_event_loop()
+        try:
+            print('start: ' + oid)
+        except Exception as exc:
+            print(exc)
+        finally:
+            await asyncio.sleep(time)
+            print('terminate: ' + oid)
 
-    for conf in configs:
-        asyncio.ensure_future(read(conf))
+    def init_loop(self, configs):
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        '''Set the uvloop policy.'''
 
-    return loop
+        loop = asyncio.get_event_loop()
 
+        for conf in configs:
+            asyncio.ensure_future(
+                self.read(oid=conf['oid'], time=conf['time'])
+            )
 
-async def multiple_tasks(configurations):
-    input_coroutines = []
-    res = None
-    loop = asyncio.get_event_loop()
-
-    for conf in configurations:
-        print(1)
-        input_coroutines.append(read(conf))
-        res = await asyncio.gather(*input_coroutines, return_exceptions=True)
-
-        # asyncio.ensure_future(read(conf))
-
-    if res is not None and loop is not None:
-        return res, loop
-    else:
-        return None, None
-
-
-def run_once():
-    pass
-
-
-def run_forever():
-    while True:
-        run_once()
+        return loop
 
 
 if __name__ == '__main__':
     snmp_configurations = [
-        {'time': 2, 'oid': '1.3.6.3.2.4'},
-        {'time': 1, 'oid': '1.3.6.3.5.8'},
+        {'time': 5, 'oid': '1.3.6.3.2.4'},
+        {'time': 6, 'oid': '1.3.6.3.5.8'},
     ]  # TODO :: DUMMY
-    loop = event_loop(snmp_configurations)
-    
+    loop = EventLoop().init_loop(snmp_configurations)
+
     try:
         loop.run_forever()
 
@@ -68,4 +55,3 @@ if __name__ == '__main__':
     finally:
         print("Closing Loop")
         loop.close()
-
