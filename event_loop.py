@@ -31,7 +31,7 @@ class EventLoop(object):
             futures = [
                 asyncio.ensure_future(
                     self.snmp_reader.read(
-                        oid=conf['oid'], time=conf['time']
+                        oid=conf['oid'], interval=conf['interval']
                     )
                 ) for conf in configs
             ]
@@ -41,7 +41,7 @@ class EventLoop(object):
             futures = [
                 asyncio.ensure_future(
                     self.read_forever(
-                        oid=conf['oid'], time=conf['time']
+                        oid=conf['oid'], interval=conf['interval']
                     )
                 ) for conf in configs
             ]
@@ -81,8 +81,8 @@ class EventLoop(object):
 
 if __name__ == '__main__':  # TODO :: Test.
     snmp_configurations = [
-        {'time': 5, 'oid': '1.3.6.3.2.4'},
-        {'time': 6, 'oid': '1.3.6.3.5.8'},
+        {'interval': 5, 'oid': '1.3.6.3.2.4'},
+        {'interval': 6, 'oid': '1.3.6.3.5.8'},
     ]  # TODO :: DUMMY
     loop, futures = EventLoop().init_loop(snmp_configurations, forever=True)
 
