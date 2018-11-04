@@ -22,6 +22,7 @@ class Getter(object):
         :return:
         """
         print('writer', config)
+
         try:
             with open('config.json', 'w') as outfile:
                 json.dump(config, outfile)
@@ -31,8 +32,8 @@ class Getter(object):
 
     def always_listen(self, method='PULL'):
         """
-        Always Listen to the ZMQ.PUSH from Django side to get the BM configuration then calling .store_config_file()
-        method.
+        Always listen to the ZMQ.SNDER from Django side to get the SNMP configuration then calling
+        the .store_config_file() method.
         :return:
         """
         sock = None
