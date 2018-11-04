@@ -43,7 +43,7 @@ class EventLoop(object):
         else:
             raise NotImplementedError()
 
-    def run_forever(self):
+    def run_forever_built_in(self):
         configs = get_config()
 
         if configs:
@@ -61,6 +61,14 @@ class EventLoop(object):
 
         else:
             raise NotImplementedError()
+
+    def run_forever(self):
+        try:
+            while True:
+                self.run_once()
+
+        except KeyboardInterrupt:
+            pass
 
 
 if __name__ == '__main__':
