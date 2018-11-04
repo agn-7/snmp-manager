@@ -1,7 +1,6 @@
 from threading import Thread
 
 from zmq_listener import Getter
-from collector import BatteryMonitoringReader
 from event_loop import EventLoop
 
 __author__ = 'aGn'
