@@ -4,3 +4,4 @@ easydict
 pyzmq
 easysnmp
 uvloop
+raven
