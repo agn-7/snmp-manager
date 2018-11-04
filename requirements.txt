@@ -1,6 +1,6 @@
 pyserial
-pymodbus==1.5.2
+pymodbus==2.1.0
 easydict
 pyzmq
-six
-raven
+easysnmp
+uvloop
