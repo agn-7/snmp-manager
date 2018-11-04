@@ -32,16 +32,8 @@ class SNMPReader(object):
         interval = kwargs.get('interval', 1)
 
         try:
-            print('start: ' + oid)
-        except Exception as exc:
-            print(exc)
-        finally:
-            await asyncio.sleep(interval)
-            print('terminate: ' + oid)
-
-        try:
             data = float(
-                snmp_get(
+                await snmp_get(  # TODO :: Check the await.
                     oid,
                     hostname=address,
                     community=community,
