@@ -1,0 +1,6 @@
+pyserial
+pymodbus==1.5.2
+easydict
+pyzmq
+six
+raven
