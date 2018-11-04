@@ -1,12 +1,12 @@
 import ast
 import json
+import asyncio
 
 from time import sleep
 from pymodbus.client.sync import ModbusSerialClient
 from easydict import EasyDict as edict
 from multiprocessing import Process
 
-from tag_generator import TagGenerator
 from response import Response
 from logger import Logging
 
@@ -16,11 +16,9 @@ __copyright__ = "Copyright 2018, Planet Earth"
 logger = Logging().sentry_logger()
 
 
-class BatteryMonitoringReader(TagGenerator):
+class BatteryMonitoringReader():
     def __init__(self):
-        super().__init__()
-        self.client = None
-        self.response = Response()
+        pass
 
     def set_client(self, config):
         """Modbus client creator."""
@@ -79,28 +77,17 @@ class BatteryMonitoringReader(TagGenerator):
         """Close the connection."""
         self.client.close()
 
-    @staticmethod
-    def get_config():
-        """
-        Reading the stored BM Json configuration file.
-        :return: BM configuration Json.
-        """
-        configs = None
+    async def read(self, **kwargs):
+        oid = kwargs.get('oid', '0.0.0.0.0.0')
+        time = kwargs.get('time', 1)
 
         try:
-            with open('config.json') as json_file:
-                configs = json.load(json_file)
-                print(configs)
-
+            print('start: ' + oid)
         except Exception as exc:
-            logger.captureMessage(exc)
-            logger.captureException()
-
-        return configs
-
-    def read_register(self, address, unit=1, count=1, **kwargs):
-        """Modbus reading holding registers"""
-        return self.client.read_holding_registers(address, count, unit=unit, **kwargs)
+            print(exc)
+        finally:
+            await asyncio.sleep(time)
+            print('terminate: ' + oid)
 
     def response_handler(self, *args):
         """

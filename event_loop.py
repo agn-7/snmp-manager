@@ -13,18 +13,6 @@ class EventLoop(object):
     def __init__(self):
         pass
 
-    async def read(self, **kwargs):
-        oid = kwargs.get('oid', '0.0.0.0.0.0')
-        time = kwargs.get('time', 1)
-
-        try:
-            print('start: ' + oid)
-        except Exception as exc:
-            print(exc)
-        finally:
-            await asyncio.sleep(time)
-            print('terminate: ' + oid)
-
     def init_loop(self, configs):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop policy.'''
