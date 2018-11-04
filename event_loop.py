@@ -16,19 +16,35 @@ class EventLoop(object):
         self.loop = None
         self.snmp_reader = SNMPReader()
 
-    def init_loop(self, configs):
+    async def read_forever(self, **kwargs):
+        while True:
+            await self.snmp_reader.read(**kwargs)
+
+    def init_loop(self, configs, forever=True):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop event loop policy.'''
 
         loop = asyncio.get_event_loop()
 
-        futures = [
-            asyncio.ensure_future(
-                self.snmp_reader.read(
-                    oid=conf['oid'], time=conf['time']
-                )
-            ) for conf in configs
-        ]
+        if not forever:
+            '''Run once.'''
+            futures = [
+                asyncio.ensure_future(
+                    self.snmp_reader.read(
+                        oid=conf['oid'], time=conf['time']
+                    )
+                ) for conf in configs
+            ]
+
+        else:
+            '''Run forever.'''
+            futures = [
+                asyncio.ensure_future(
+                    self.read_forever(
+                        oid=conf['oid'], time=conf['time']
+                    )
+                ) for conf in configs
+            ]
 
         return loop, futures
 
@@ -36,18 +52,18 @@ class EventLoop(object):
         configs = get_config()
 
         if configs:
-            loop, futures = self.init_loop(configs)
+            loop, futures = self.init_loop(configs, forever=False)
             result = loop.run_until_complete(asyncio.gather(*futures))
             print(result)
 
         else:
             raise NotImplementedError()
 
-    def run_forever_built_in(self):
+    def run_forever(self):
         configs = get_config()
 
         if configs:
-            loop, _ = self.init_loop(configs)
+            loop, _ = self.init_loop(configs, forever=True)
 
             try:
                 loop.run_forever()
@@ -62,21 +78,13 @@ class EventLoop(object):
         else:
             raise NotImplementedError()
 
-    def run_forever(self):
-        try:
-            while True:
-                self.run_once()
 
-        except KeyboardInterrupt:
-            pass
-
-
-if __name__ == '__main__':
+if __name__ == '__main__':  # TODO :: Test.
     snmp_configurations = [
         {'time': 5, 'oid': '1.3.6.3.2.4'},
         {'time': 6, 'oid': '1.3.6.3.5.8'},
     ]  # TODO :: DUMMY
-    loop, futures = EventLoop().init_loop(snmp_configurations)
+    loop, futures = EventLoop().init_loop(snmp_configurations, forever=True)
 
     try:
         loop.run_forever()
