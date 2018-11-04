@@ -22,21 +22,32 @@ class EventLoop(object):
 
         loop = asyncio.get_event_loop()
 
-        for conf in configs:
+        futures = [
             asyncio.ensure_future(
-                self.snmp_reader.read(oid=conf['oid'], time=conf['time'])
-            )
+                self.snmp_reader.read(
+                    oid=conf['oid'], time=conf['time']
+                )
+            ) for conf in configs
+        ]
 
-        return loop
+        return loop, futures
 
-    def run_once(self):  # TODO
-        raise NotImplementedError()
+    def run_once(self):
+        configs = get_config()
+
+        if configs:
+            loop, futures = self.init_loop(configs)
+            result = loop.run_until_complete(asyncio.gather(*futures))
+            print(result)
+
+        else:
+            raise NotImplementedError()
 
     def run_forever(self):
         configs = get_config()
 
         if configs:
-            loop = self.init_loop(configs)
+            loop, _ = self.init_loop(configs)
 
             try:
                 loop.run_forever()
@@ -57,10 +68,12 @@ if __name__ == '__main__':
         {'time': 5, 'oid': '1.3.6.3.2.4'},
         {'time': 6, 'oid': '1.3.6.3.5.8'},
     ]  # TODO :: DUMMY
-    loop = EventLoop().init_loop(snmp_configurations)
+    loop, futures = EventLoop().init_loop(snmp_configurations)
 
     try:
         loop.run_forever()
+        # res = loop.run_until_complete(asyncio.gather(*futures))
+        # print(res)
 
     except KeyboardInterrupt:
         pass
