@@ -18,7 +18,7 @@ class EventLoop(object):
 
     def init_loop(self, configs):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-        '''Set the uvloop policy.'''
+        '''Set the uvloop event loop policy.'''
 
         loop = asyncio.get_event_loop()
 
@@ -28,6 +28,9 @@ class EventLoop(object):
             )
 
         return loop
+
+    def run_once(self):  # TODO
+        raise NotImplementedError()
 
     def run_forever(self):
         configs = get_config()
