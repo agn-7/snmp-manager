@@ -14,45 +14,45 @@ async def worker(**kwargs):
         print('terminate: ' + oid)
 
 
-async def worker_with_loop(**kwargs):
+async def worker_run_forever(**kwargs):
     while True:
-        oid = kwargs.get('oid', '0.0.0.0.0.0')
-        time = kwargs.get('time', 1)
-
-        try:
-            # Do stuff.
-            print('start: ' + oid)
-        except Exception as exc:
-            print(exc)
-        finally:
-            await asyncio.sleep(time)
-            print('terminate: ' + oid)
+        await worker(**kwargs)
 
 
-def init_loop(configs):
+def init_loop(configs, forever=True):
     loop = asyncio.get_event_loop()
 
-    futures = [
-        asyncio.ensure_future(
-            worker_with_loop(
-                oid=conf['oid'], time=conf['time']
-            )
-        ) for conf in configs
-    ]
+    if forever:
+        futures = [
+            asyncio.ensure_future(
+                worker_run_forever(
+                    oid=conf['oid'], time=conf['time']
+                )
+            ) for conf in configs
+        ]
+
+    else:
+        futures = [
+            asyncio.ensure_future(
+                worker(
+                    oid=conf['oid'], time=conf['time']
+                )
+            ) for conf in configs
+        ]
 
     return loop, futures
 
 
 def run_once(configs):
     print('RUN_ONCE')
-    loop, futures = init_loop(configs)
+    loop, futures = init_loop(configs, forever=False)
     result = loop.run_until_complete(asyncio.gather(*futures))
     print(result)
 
 
-def run_forever_built_in(configs):
+def run_forever(configs):
     print('RUN_FOREVER')
-    loop, _ = init_loop(configs)
+    loop, _ = init_loop(configs, forever=True)
     try:
         loop.run_forever()
 
@@ -64,15 +64,6 @@ def run_forever_built_in(configs):
         loop.close()
 
 
-def run_forever(configs):
-    try:
-        while True:
-            run_once(configs)
-
-    except KeyboardInterrupt:
-        pass
-
-
 if __name__ == '__main__':
     configurations = [
         {'time': 5, 'oid': '1.3.6.3.2.4'},
@@ -80,6 +71,6 @@ if __name__ == '__main__':
         {'time': 1, 'oid': '1.3.6.3.5.6'},
     ]  # TODO :: DUMMY
 
-    # run_once(configurations)
-    # run_forever(configurations)
-    run_forever_built_in(configurations)
+    run_once(configurations)
+    run_forever(configurations)
+
