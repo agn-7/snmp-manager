@@ -1,6 +1,7 @@
 import json
 
 from logger import Logging
+from utility import MWT
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -8,6 +9,7 @@ __copyright__ = "Copyright 2018, Planet Earth"
 logger = Logging().sentry_logger()
 
 
+@MWT(timeout=7)
 def get_config():
     """
     Reading the stored SNMP Json configuration file.
