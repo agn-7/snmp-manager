@@ -17,6 +17,11 @@ class EventLoop(object):
         self.snmp_reader = SNMPReader()
 
     async def read_forever(self, **kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
         while True:
             await self.snmp_reader.read(**kwargs)
 
@@ -38,13 +43,8 @@ class EventLoop(object):
 
         else:
             '''Run forever.'''
-            futures = [
-                asyncio.ensure_future(
-                    self.read_forever(
-                        oid=conf['oid'], interval=conf['interval']
-                    )
-                ) for conf in configs
-            ]
+            futures = [asyncio.ensure_future(self.read_forever(**conf))
+                       for conf in configs]
 
         return loop, futures
 

@@ -33,7 +33,7 @@ class SNMPReader(object):
 
         try:
             data = float(
-                await snmp_get(  # TODO :: Check the await.
+                snmp_get(  # TODO :: Check the await.
                     oid,
                     hostname=address,
                     community=community,
@@ -47,6 +47,14 @@ class SNMPReader(object):
             return {name: data}
 
         except Exception as exc:
+            print(
+                "IP : {} - NAME : {} - OID : {} >> {}".format(
+                    address,
+                    name,
+                    oid,
+                    exc
+                )
+            )
             logger.captureMessage(
                 "IP : {} - NAME : {} - OID : {} >> {}".format(
                     address,
