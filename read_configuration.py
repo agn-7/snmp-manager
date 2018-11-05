@@ -54,7 +54,7 @@ def get_config():
             configs = json.load(json_file)
 
         configs = flatten(configs)
-        pprint(configs)
+        # pprint(configs)
 
     except Exception as exc:
         logger.captureMessage(exc)

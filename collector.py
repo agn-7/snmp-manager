@@ -1,10 +1,6 @@
-import ast
-import json
 import asyncio
 
-from time import sleep
 from easydict import EasyDict as edict
-from multiprocessing import Process
 from easysnmp import snmp_get
 
 from response import Response
@@ -18,11 +14,12 @@ logger = Logging().sentry_logger()
 
 class SNMPReader(object):
     def __init__(self):
-        pass
+        self.response = Response()
 
     async def read(self, **kwargs):
         oid = kwargs.get('oid', '0.0.0.0.0.0')
         name = kwargs.get('tag_name', 'Default Name')
+        module = kwargs.get('name', 'SNMP Device')
         address = kwargs.get('address', 1)
         community = kwargs.get('community', 'public')
         version = kwargs.get('version', 1)
@@ -31,9 +28,13 @@ class SNMPReader(object):
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 1)
 
+        # meta = kwargs.get('meta', {})
+
+        meta = {}  # TODO :: DUMMY
+
         try:
             data = float(
-                snmp_get(  # TODO :: Check the await.
+                snmp_get(  # TODO :: Check the await at here.
                     oid,
                     hostname=address,
                     community=community,
@@ -44,8 +45,16 @@ class SNMPReader(object):
                 ).value
             )
 
-            print(name, data)
-            return {name: data}
+            result = {name: data}
+
+            self.response.publish(
+                module=module,
+                meta_data=meta,
+                server_ip='172.17.0.1',  # TODO :: DUMMY
+                pipeline_ip='172.17.0.1',  # TODO :: DUMMY
+                pipeline_port='9001',  # TODO :: DUMMY
+                **result
+            )
 
         except Exception as exc:
             print(
@@ -69,52 +78,4 @@ class SNMPReader(object):
 
         finally:
             await asyncio.sleep(interval)
-
-    def process(self, config, **kwargs):
-        """
-        Reading desired values from Shahab's board.
-        :param config: Received Json-configs.
-        :return:
-        """
-
-        server_ip = kwargs.get('server_ip')
-        pipeline_ip = kwargs.get('pipeline_ip')
-        pipeline_port = kwargs.get('pipeline_port')
-        # print(result)
-
-        self.response.publish(
-            config,
-            server_ip=server_ip,
-            pipeline_ip=pipeline_ip,
-            pipeline_port=pipeline_port,
-            **result
-        )
-        flag = True
-
-    def async_parser(self, configs):
-        """
-        Async multiprocess Parsing the received Json config file and call the .process() method.
-        :param configs: Received configs from Django admin.
-        :return:
-        """
-        jobs = list()
-        obj_config = edict(configs)
-        kwargs = dict(server_ip=obj_config._server_ip,
-                      pipeline_ip=obj_config._pipeline_ip,
-                      pipeline_port=obj_config._pipeline_port)
-
-        if obj_config._start:
-
-            for dongle in obj_config._dongles:
-                cli = self.set_client(dongle)
-                job = Process(target=self.async_sub_process, args=(dongle, cli), kwargs=kwargs)
-                jobs.append(job)
-                job.start()
-
-            for j in jobs:
-                j.join()
-
-        else:
-            print('BM config starter is OFF.')
-            sleep(1)
 

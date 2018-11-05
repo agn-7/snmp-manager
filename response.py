@@ -24,7 +24,11 @@ class Response(object):
 
         return socket
 
-    def publish(self, config, *, server_ip, pipeline_ip, pipeline_port, **kwargs):
+    def publish(
+            self, module, meta_data, *,
+            server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
+            **kwargs
+    ):
         """
         Packing Json file in order to sending on ZMQ pipeline.
         :param config: B.M received config.
@@ -34,13 +38,13 @@ class Response(object):
         :param kwargs: Battery values result.
         :return:
         """
-        for key, val in kwargs.items():
+        for name, data in kwargs.items():
             result = {
-                'data': {key: val},
-                'module': config._name,
+                'data': {name: data},
+                'module': module,
                 'time': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                'station': 'Battery-Monitoring',
-                'tags': config._meta_data
+                'station': 'SNMP',
+                'tags': meta_data
             }
 
             # print(result)  # TODO :: make it to the logger if is necessary.
