@@ -74,7 +74,16 @@ class SNMPReader(object):
                 )
             )
 
-            return {name: None}
+            result = None
+
+            self.response.publish(
+                module=module,
+                meta_data=meta,
+                server_ip='172.17.0.1',  # TODO :: DUMMY
+                pipeline_ip='172.17.0.1',  # TODO :: DUMMY
+                pipeline_port='9001',  # TODO :: DUMMY
+                **result  # TODO :: handle it
+            )
 
         finally:
             await asyncio.sleep(interval)

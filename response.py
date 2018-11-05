@@ -47,7 +47,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            # print(result)  # TODO :: make it to the logger if is necessary.
+            print(result)  # TODO :: make it to the logger if is necessary.
             if pipeline_ip != '127.0.0.1':
                 sock = self.create_pub_socket(pipeline_ip, pipeline_port)
                 sock.send_json(result, 0)
