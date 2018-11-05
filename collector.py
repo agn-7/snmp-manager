@@ -22,14 +22,14 @@ class SNMPReader(object):
 
     async def read(self, **kwargs):
         oid = kwargs.get('oid', '0.0.0.0.0.0')
-        name = kwargs.get('name', 'Default Name')
+        name = kwargs.get('tag_name', 'Default Name')
         address = kwargs.get('address', 1)
         community = kwargs.get('community', 'public')
         version = kwargs.get('version', 1)
         port = kwargs.get('port', 161)
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
-        interval = kwargs.get('interval', 1)
+        interval = kwargs.get('sleep_time', 1)
 
         try:
             data = float(
@@ -44,6 +44,7 @@ class SNMPReader(object):
                 ).value
             )
 
+            print(name, data)
             return {name: data}
 
         except Exception as exc:
