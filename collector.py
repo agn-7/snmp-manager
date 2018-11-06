@@ -1,4 +1,5 @@
 import asyncio
+import async_timeout
 
 from easydict import EasyDict as edict
 from easysnmp import snmp_get
@@ -32,59 +33,54 @@ class SNMPReader(object):
 
         meta = {}  # TODO :: DUMMY
 
-        try:
-            data = float(
-                snmp_get(  # TODO :: Check the await at here.
-                    oid,
-                    hostname=address,
-                    community=community,
-                    version=version,
-                    remote_port=port,
-                    timeout=timeout,
-                    retries=retries,
-                ).value
-            )
+        data = None
 
-            result = {name: data}
+        async with async_timeout.timeout(timeout * retries):
 
-            self.response.publish(
-                module=module,
-                meta_data=meta,
-                server_ip='172.17.0.1',  # TODO :: DUMMY
-                pipeline_ip='172.17.0.1',  # TODO :: DUMMY
-                pipeline_port='9001',  # TODO :: DUMMY
-                **result
-            )
-
-        except Exception as exc:
-            print(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    exc
+            try:
+                data = float(
+                    snmp_get(  # TODO :: Check the await at here.
+                        oid,
+                        hostname=address,
+                        community=community,
+                        version=version,
+                        remote_port=port,
+                        timeout=timeout,
+                        retries=retries,
+                    ).value
                 )
-            )
-            logger.captureMessage(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    exc
+
+            except Exception as exc:
+                print(
+                    "IP : {} - NAME : {} - OID : {} >> {}".format(
+                        address,
+                        name,
+                        oid,
+                        exc
+                    )
                 )
-            )
+                logger.captureMessage(
+                    "IP : {} - NAME : {} - OID : {} >> {}".format(
+                        address,
+                        name,
+                        oid,
+                        exc
+                    )
+                )
 
-            result = None
+                data = None
 
-            self.response.publish(
-                module=module,
-                meta_data=meta,
-                server_ip='172.17.0.1',  # TODO :: DUMMY
-                pipeline_ip='172.17.0.1',  # TODO :: DUMMY
-                pipeline_port='9001',  # TODO :: DUMMY
-                **result  # TODO :: handle it
-            )
+            finally:
+                result = {name: data}
 
-        finally:
-            await asyncio.sleep(interval)
+                self.response.publish(
+                    module=module,
+                    meta_data=meta,
+                    server_ip='172.17.0.1',  # TODO :: DUMMY
+                    pipeline_ip='172.17.0.1',  # TODO :: DUMMY
+                    pipeline_port='9001',  # TODO :: DUMMY
+                    **result  # TODO :: handle it
+                )
+
+                await asyncio.sleep(interval)
 

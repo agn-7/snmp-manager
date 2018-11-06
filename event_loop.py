@@ -33,13 +33,8 @@ class EventLoop(object):
 
         if not forever:
             '''Run once.'''
-            futures = [
-                asyncio.ensure_future(
-                    self.snmp_reader.read(
-                        oid=conf['oid'], interval=conf['interval']
-                    )
-                ) for conf in configs
-            ]
+            futures = [asyncio.ensure_future(self.snmp_reader.read(**conf))
+                       for conf in configs]
 
         else:
             '''Run forever.'''

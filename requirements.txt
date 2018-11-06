@@ -5,3 +5,4 @@ pyzmq
 easysnmp
 uvloop
 raven
+async-timeout
