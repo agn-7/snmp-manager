@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from threading import Thread
 
 from zmq_listener import Getter
