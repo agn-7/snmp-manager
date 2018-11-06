@@ -1,12 +1,14 @@
 import asyncio
 import uvloop
 import async_timeout
+import time
+from datetime import datetime
 
 
 async def doing(loop, i):
-    print('Hi', i)
-    await asyncio.sleep(i+3, loop=loop)
-    print('Terminate', i)
+    print('Hi', i,  datetime.now().strftime('%H:%M:%S'))
+    await asyncio.sleep(i+3)
+    print('Terminate', i,  datetime.now().strftime('%H:%M:%S'))
 
 async def doing_once(loop, i):
     try:
@@ -15,13 +17,12 @@ async def doing_once(loop, i):
             print("I'm here.", i)
 
     except asyncio.TimeoutError as exc:
-        # print(cm.expired, exc)
         print('Timeout', i)
 
 async def doing_forever(loop, i):
     while True:
         try:
-            async with async_timeout.timeout(5, loop=loop) as cm:
+            async with async_timeout.timeout(5) as cm:
                 # print("Hi")
                 # await asyncio.sleep(7, loop=loop)
                 await doing(loop, i)
@@ -69,5 +70,5 @@ def run_forever():
         loop.close()
 
 if __name__ == '__main__':  # TODO :: Test.
-    run_once()
+    # run_once()
     run_forever()
