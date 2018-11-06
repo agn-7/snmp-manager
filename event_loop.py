@@ -1,5 +1,6 @@
 import asyncio
 import uvloop
+import async_timeout
 
 from logger import Logging
 from read_configuration import get_config
@@ -16,14 +17,41 @@ class EventLoop(object):
         self.loop = None
         self.snmp_reader = SNMPReader()
 
-    async def read_forever(self, **kwargs):
+    @staticmethod
+    def get_timeout(sleep, timeout):
+        if sleep < timeout:
+            total_time = sleep + timeout
+
+        else:
+            total_time = max(sleep, timeout)
+
+        return total_time + .1  # TODO
+
+    async def read_forever(self, loop, **kwargs):
         """
 
+        :param loop:
         :param kwargs:
         :return:
         """
+        timeout = kwargs.get('timeout', 1)
+        retries = kwargs.get('retries', 3)
+        interval = kwargs.get('sleep_time', 3)
+        total_timeout = self.get_timeout(sleep=interval, timeout=(timeout * retries))
+
         while True:
-            await self.snmp_reader.read(**kwargs)
+            try:
+                async with async_timeout.timeout(total_timeout, loop=loop) as cm:
+                    await self.snmp_reader.read(loop, **kwargs)
+                    # await asyncio.sleep(2, loop=loop)
+                    print('kirrrrrr')
+
+            except asyncio.TimeoutError as exc:
+                # print(cm.expired, exc)
+                pass
+
+            except KeyboardInterrupt:
+                loop.close()
 
     def init_loop(self, configs, forever=True):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -33,12 +61,12 @@ class EventLoop(object):
 
         if not forever:
             '''Run once.'''
-            futures = [asyncio.ensure_future(self.snmp_reader.read(**conf))
+            futures = [asyncio.ensure_future(self.snmp_reader.read(loop, **conf))
                        for conf in configs]
 
         else:
             '''Run forever.'''
-            futures = [asyncio.ensure_future(self.read_forever(**conf))
+            futures = [asyncio.ensure_future(self.read_forever(loop, **conf))
                        for conf in configs]
 
         return loop, futures
