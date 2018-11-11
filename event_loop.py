@@ -44,7 +44,7 @@ class EventLoop(object):
                 async with async_timeout.timeout(total_timeout, loop=loop) as cm:
                     await self.snmp_reader.read(loop, **kwargs)
                     # await asyncio.sleep(2, loop=loop)
-                    print('kirrrrrr')
+                    # print('kirrrrrr')
 
             except asyncio.TimeoutError as exc:
                 # print(cm.expired, exc)
@@ -66,7 +66,10 @@ class EventLoop(object):
 
         else:
             '''Run forever.'''
-            futures = [asyncio.ensure_future(self.read_forever(loop, **conf))
+            # futures = [asyncio.ensure_future(self.read_forever(loop, **conf))
+            #            for conf in configs]
+            '''OR'''
+            futures = [loop.create_task(self.read_forever(loop, **conf))
                        for conf in configs]
 
         return loop, futures

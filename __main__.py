@@ -13,7 +13,7 @@ class SNMP(Getter):
     def __init__(self):
         super().__init__()
 
-    def producer(self):
+    def main(self):
         # thread_ = Thread(target=self.listen)
         thread_ = Thread(target=self.always_listen, args=('SUB',))
         thread_.daemon = True
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     print('Start')
 
     try:
-        SNMP().producer()
+        SNMP().main()
 
     except KeyboardInterrupt:
         pass

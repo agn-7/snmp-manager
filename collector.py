@@ -1,6 +1,7 @@
 import asyncio
 import async_timeout
 import time
+import traceback
 
 from easydict import EasyDict as edict
 from easysnmp import snmp_get
@@ -64,7 +65,7 @@ class SNMPReader(object):
                     address,
                     name,
                     oid,
-                    exc
+                    traceback.format_exc()
                 )
             )
             logger.captureMessage(
