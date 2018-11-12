@@ -14,9 +14,6 @@ logger = Logging().sentry_logger()
 
 
 class RedisPipeline(ResponseAbstract):
-    def __init__(self):
-        super().__init__()
-
     @staticmethod
     def create_pub_socket(ip, port):
         context = zmq.Context()

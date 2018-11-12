@@ -10,7 +10,18 @@ __copyright__ = "Copyright 2018, Planet Earth"
 
 logger = Logging().sentry_logger()
 
-PIPELINE = [RedisPipeline(), InfluxPipeline()]  # TODO :: Make it dynamically.
+PIPELINE = [
+    RedisPipeline(
+        server_ip='127.0.0.1',
+        pipeline_ip='127.0.0.1',
+        pipeline_port=9002
+    ),
+    InfluxPipeline(
+        server_ip='127.0.0.1',
+        pipeline_ip='127.0.0.1',
+        pipeline_port=9001
+    ),
+]  # TODO :: Make it dynamically.
 
 
 class ResponseAbstract(ABC):
