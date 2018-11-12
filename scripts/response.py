@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 from .logger import Logging
-from scripts.redis_pipeline import RedisPipeline
-from scripts.influx_pipeline import InfluxPipeline
+from scripts.redis_response import RedisResponse
+from scripts.influx_response import InfluxResponse
 
 
 __author__ = 'aGn'
@@ -11,12 +11,12 @@ __copyright__ = "Copyright 2018, Planet Earth"
 logger = Logging().sentry_logger()
 
 PIPELINE = [
-    RedisPipeline(
+    RedisResponse(
         server_ip='127.0.0.1',
         pipeline_ip='127.0.0.1',
         pipeline_port=9002
     ),
-    InfluxPipeline(
+    InfluxResponse(
         server_ip='127.0.0.1',
         pipeline_ip='127.0.0.1',
         pipeline_port=9001

@@ -13,7 +13,7 @@ __copyright__ = "Copyright 2018, Planet Earth"
 logger = Logging().sentry_logger()
 
 
-class RedisPipeline(ResponseAbstract):
+class RedisResponse(ResponseAbstract):
     @staticmethod
     def create_pub_socket(ip, port):
         context = zmq.Context()
