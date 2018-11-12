@@ -15,9 +15,6 @@ logger = Logging().sentry_logger()
 
 
 class InfluxPipeline(ResponseAbstract):
-    def __init__(self):
-        super().__init__()
-
     @staticmethod
     def create_pub_socket(ip, port):
         context = zmq.Context()
@@ -28,8 +25,7 @@ class InfluxPipeline(ResponseAbstract):
         return socket
 
     def publish(
-            self, module, meta_data, *,
-            server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
+            self, module, meta_data,
             **kwargs
     ):
         """
@@ -53,13 +49,13 @@ class InfluxPipeline(ResponseAbstract):
             }
 
             pprint(result)  # TODO :: make it to the logger if is necessary.
-            if pipeline_ip != '127.0.0.1':
-                sock = self.create_pub_socket(pipeline_ip, pipeline_port)
+            if self.pipeline_ip != '127.0.0.1':
+                sock = self.create_pub_socket(self.pipeline_ip, self.pipeline_port)
                 # sock.send_json(result, 0)
                 sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             else:
-                sock = self.create_pub_socket(server_ip, pipeline_port)
+                sock = self.create_pub_socket(self.server_ip, self.pipeline_port)
                 # sock.send_json(result, 0)
                 sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
 

@@ -1,6 +1,4 @@
-import abc
-
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from .logger import Logging
 from scripts.redis_pipeline import RedisPipeline
@@ -15,17 +13,23 @@ logger = Logging().sentry_logger()
 PIPELINE = [RedisPipeline(), InfluxPipeline()]  # TODO :: Make it dynamically.
 
 
-class ResponseAbstract(object):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self):
-        return
+class ResponseAbstract(ABC):
+    def __init__(
+            self,
+            server_ip='127.0.0.1',
+            pipeline_ip='127.0.0.1',
+            pipeline_port=9001
+    ):
+        self.server_ip = server_ip
+        self.pipeline_ip = pipeline_ip
+        self.pipeline_port = pipeline_port
+        super().__init__()
 
     @abstractmethod
     def publish(
-            self, module, meta_data, *,
-            server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
-            **kwargs):
+            self, module, meta_data,
+            **kwargs
+    ):
         pass
 
 
