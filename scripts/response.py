@@ -12,7 +12,7 @@ PIPELINE = [
     RedisResponse(
         server_ip='127.0.0.1',
         pipeline_ip='127.0.0.1',
-        pipeline_port=9002
+        pipeline_port=6677
     ),
     InfluxResponse(
         server_ip='127.0.0.1',
