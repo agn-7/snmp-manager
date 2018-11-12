@@ -6,8 +6,8 @@ import traceback
 from easydict import EasyDict as edict
 from easysnmp import snmp_get
 
-from response import Response
-from logger import Logging
+from .response import Response
+from .logger import Logging
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"

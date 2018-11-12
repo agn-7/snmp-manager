@@ -2,7 +2,7 @@ import zmq
 
 from datetime import datetime
 from time import sleep
-from logger import Logging
+from .logger import Logging
 from pprint import pprint
 
 __author__ = 'aGn'
