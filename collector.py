@@ -86,14 +86,16 @@ class SNMPReader(object):
                 module=module,
                 meta_data=meta,
                 server_ip='172.17.0.1',  # TODO :: DUMMY
-                pipeline_ip='172.17.0.1',  # TODO :: DUMMY
+                pipeline_ip='192.168.1.134',  # TODO :: DUMMY
                 pipeline_port='9001',  # TODO :: DUMMY
                 **result  # TODO :: handle it
             )
             tack = time.time() - tick
 
             if interval >= (retries * timeout):
-                await asyncio.sleep(interval - tack, loop=loop)
+                # await asyncio.sleep(interval - tack, loop=loop)
+                await asyncio.sleep(interval - tack)
 
             else:
-                await asyncio.sleep(interval, loop=loop)
+                # await asyncio.sleep(interval, loop=loop)
+                await asyncio.sleep(interval)
