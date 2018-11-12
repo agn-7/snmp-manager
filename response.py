@@ -32,6 +32,8 @@ class Response(object):
         """
         Packing Json file in order to sending on ZMQ pipeline.
         :param config: B.M received config.
+        :param module:
+        :param meta_data:
         :param server_ip: Server_IP
         :param pipeline_ip: Pipeline_IP
         :param pipeline_port: Pipeline_IP
@@ -50,10 +52,12 @@ class Response(object):
             print(result)  # TODO :: make it to the logger if is necessary.
             if pipeline_ip != '127.0.0.1':
                 sock = self.create_pub_socket(pipeline_ip, pipeline_port)
-                sock.send_json(result, 0)
+                # sock.send_json(result, 0)
+                sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             else:
                 sock = self.create_pub_socket(server_ip, pipeline_port)
-                sock.send_json(result, 0)
+                # sock.send_json(result, 0)
+                sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             # sleep()  # TODO :: maybe need a bit sleeping time.
