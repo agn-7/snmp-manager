@@ -3,6 +3,7 @@ import zmq
 from datetime import datetime
 from time import sleep
 from logger import Logging
+from pprint import pprint
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -49,7 +50,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            print(result)  # TODO :: make it to the logger if is necessary.
+            pprint(result)  # TODO :: make it to the logger if is necessary.
             if pipeline_ip != '127.0.0.1':
                 sock = self.create_pub_socket(pipeline_ip, pipeline_port)
                 # sock.send_json(result, 0)
