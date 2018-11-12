@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 from .logger import Logging
 from scripts.redis_response import RedisResponse
 from scripts.influx_response import InfluxResponse
@@ -24,34 +22,14 @@ PIPELINE = [
 ]  # TODO :: Make it dynamically.
 
 
-class ResponseAbstract(ABC):
-    def __init__(
-            self,
-            server_ip='127.0.0.1',
-            pipeline_ip='127.0.0.1',
-            pipeline_port=9001
-    ):
-        self.server_ip = server_ip
-        self.pipeline_ip = pipeline_ip
-        self.pipeline_port = pipeline_port
-        super().__init__()
-
-    @abstractmethod
-    def publish(
-            self, module, meta_data,
-            **kwargs
-    ):
-        pass
-
-
 class Response(object):
     def __init__(self):
         pass
 
     @staticmethod
     def publish(  # TODO
-            module, meta_data, *,
-            server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
+            module, meta_data, # *,
+            # server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
             **kwargs
     ):
         for pipe in PIPELINE:

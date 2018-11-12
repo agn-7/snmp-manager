@@ -5,7 +5,7 @@ from time import sleep
 from pprint import pprint
 
 from .logger import Logging
-from scripts.response import ResponseAbstract
+from scripts.response_abstract import ResponseAbstract
 
 
 __author__ = 'aGn'
