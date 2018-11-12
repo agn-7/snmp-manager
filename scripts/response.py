@@ -49,14 +49,14 @@ class Response(object):
         pass
 
     @staticmethod
-    def publish(
+    def publish(  # TODO
             module, meta_data, *,
             server_ip='127.0.0.1', pipeline_ip='127.0.0.1', pipeline_port=9001,
             **kwargs
     ):
         for pipe in PIPELINE:
-            pipe.publish(
+            pipe.publish(  # TODO
                 module, meta_data,
-                server_ip=server_ip, pipeline_ip=pipeline_ip, pipeline_port=pipeline_port,
+                # server_ip=server_ip, pipeline_ip=pipeline_ip, pipeline_port=pipeline_port,
                 **kwargs
             )
