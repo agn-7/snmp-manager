@@ -77,7 +77,7 @@ class SNMPReader(object):
                 )
             )
 
-            data = None
+            data = -8555
 
         finally:
             result = {name: data}

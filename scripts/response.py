@@ -15,7 +15,7 @@ PIPELINE = [
         pipeline_port=6677
     ),
     InfluxResponse(
-        server_ip='127.0.0.1',
+        server_ip='192.168.1.134',
         pipeline_ip='127.0.0.1',
         pipeline_port=9001
     ),
