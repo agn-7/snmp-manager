@@ -15,14 +15,24 @@ logger = Logging().sentry_logger()
 
 
 class InfluxResponse(ResponseAbstract):
-    @staticmethod
-    def create_pub_socket(ip, port):
+    def __init__(self, server_ip, pipeline_ip, pipeline_port):
+        super().__init__()
+
+        self.server_ip = server_ip
+        self.pipeline_ip = pipeline_ip
+        self.pipeline_port = pipeline_port
+
         context = zmq.Context()
         socket = context.socket(zmq.PUB)
-        zmq_address = "tcp://{}:{}".format(ip, port)
-        socket.connect(zmq_address)
 
-        return socket
+        if self.pipeline_ip != '127.0.0.1':
+            zmq_address = "tcp://{}:{}".format(self.pipeline_ip, self.pipeline_port)
+
+        else:
+            zmq_address = "tcp://{}:{}".format(self.server_ip, self.pipeline_port)
+
+        socket.connect(zmq_address)
+        self.socket = socket
 
     def publish(
             self, module, meta_data,
@@ -49,14 +59,12 @@ class InfluxResponse(ResponseAbstract):
             }
 
             pprint(result)  # TODO :: make it to the logger if is necessary.
-            if self.pipeline_ip != '127.0.0.1':
-                sock = self.create_pub_socket(self.pipeline_ip, self.pipeline_port)
-                # sock.send_json(result, 0)
-                sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
-            else:
-                sock = self.create_pub_socket(self.server_ip, self.pipeline_port)
-                # sock.send_json(result, 0)
-                sock.send_json(result, flags=zmq.NOBLOCK)  # TODO
+            try:
+                self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
+
+            except zmq.ZMQError as exc:
+                print('Space if full >> {}'.format(exc))
+                sleep(1)
 
             # sleep()  # TODO :: maybe need a bit sleeping time.
