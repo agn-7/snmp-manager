@@ -1,6 +1,7 @@
 from .logger import Logging
 from scripts.redis_response import RedisResponse
 from scripts.influx_response import InfluxResponse
+from scripts.raw_response import RawResponse
 
 
 __author__ = 'aGn'
@@ -19,6 +20,11 @@ PIPELINE = [
         pipeline_ip='127.0.0.1',
         pipeline_port=9001
     ),
+    RawResponse(
+        server_ip='127.0.0.1',
+        pipeline_ip='127.0.0.1',
+        pipeline_port=7766
+    )
 ]  # TODO :: Make it dynamically.
 
 
