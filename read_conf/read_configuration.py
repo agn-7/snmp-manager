@@ -3,8 +3,8 @@ import json
 from pprint import pprint
 from easydict import EasyDict as edict
 
-from .logger import Logging
-from .utility import MWT
+from utility.logger import Logging
+from utility.utility import MWT
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"

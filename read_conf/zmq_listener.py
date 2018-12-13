@@ -2,7 +2,7 @@ import zmq
 import time
 import json
 
-from .logger import Logging
+from utility.logger import Logging
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"

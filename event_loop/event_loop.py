@@ -2,9 +2,9 @@ import asyncio
 import uvloop
 import async_timeout
 
-from .logger import Logging
-from .read_configuration import get_config
-from .collector import SNMPReader
+from utility.logger import Logging
+from read_conf.read_configuration import get_config
+from collect.collector import SNMPReader
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"

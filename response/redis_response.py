@@ -4,8 +4,8 @@ import time
 from datetime import datetime
 from pprint import pprint
 
-from .logger import Logging
-from scripts.response_abstract import ResponseAbstract
+from utility.logger import Logging
+from response.response_abstract import ResponseAbstract
 
 
 __author__ = 'aGn'

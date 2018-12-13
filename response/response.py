@@ -1,7 +1,7 @@
-from .logger import Logging
-from scripts.redis_response import RedisResponse
-from scripts.influx_response import InfluxResponse
-from scripts.raw_response import RawResponse
+from utility.logger import Logging
+from response.redis_response import RedisResponse
+from response.influx_response import InfluxResponse
+from response.raw_response import RawResponse
 
 
 __author__ = 'aGn'

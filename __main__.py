@@ -2,8 +2,8 @@
 
 from threading import Thread
 
-from scripts.zmq_listener import Getter
-from scripts.event_loop import EventLoop
+from read_conf.zmq_listener import Getter
+from event_loop.event_loop import EventLoop
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
