@@ -44,14 +44,16 @@ class SNMPReader(object):
                 CommunityData(community),
                 UdpTransportTarget(hostname, timeout=timeout, retries=retries),
                 ContextData(),
-                ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
+                ObjectType(ObjectIdentity(oid))  # TODO
             )
 
             if error_indication:
+                print(11111)
                 print(error_indication)
                 data = -8555
 
             elif error_status:
+                print(22222)
                 print('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
@@ -59,8 +61,15 @@ class SNMPReader(object):
                       )
                 data = -8555
             else:
-                for data in var_binds:
-                    print(' = '.join([x.prettyPrint() for x in data]))
+                print(3333)
+                for var_bind in var_binds:
+                    # print(' = '.join([x.prettyPrint() for x in var_bind]))
+
+                    # for data in var_bind:
+                    #     print('data: ', data)
+
+                    print('data: ', var_bind[1])
+                    data = float(var_bind[1])
 
         except Exception as exc:
             print(
@@ -155,7 +164,7 @@ class SNMPReader(object):
             data = -8555
 
         finally:
-            result = {name: data}
+            result = {name: float(data)}
 
             self.response.publish(  # TODO
                 module=module,
