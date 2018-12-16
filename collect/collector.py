@@ -1,10 +1,10 @@
 import asyncio
-import async_timeout
 import time
 import traceback
 
 from easydict import EasyDict as edict
 from easysnmp import snmp_get
+from pysnmp.hlapi.asyncio import *
 
 from response.response import Response
 from utility.logger import Logging
@@ -18,12 +18,90 @@ logger = Logging().sentry_logger()
 class SNMPReader(object):
     def __init__(self):
         self.response = Response()
+        self.snmp_engine = SnmpEngine()
 
-    async def read(self, loop, **kwargs):
+    async def read_async_full(self, loop, **kwargs):
+        oid = kwargs.get('oid', '0.0.0.0.0.0')
+        name = kwargs.get('tag_name', 'Default Name')
+        module = kwargs.get('name', 'SNMP Device')
+        address = kwargs.get('address', 1)
+        community = kwargs.get('community', 'public')
+        version = kwargs.get('version', 1)
+        port = kwargs.get('port', 161)
+        timeout = kwargs.get('timeout', 1)
+        retries = kwargs.get('retries', 3)
+        interval = kwargs.get('sleep_time', 3)
+        # meta = kwargs.get('meta', {})
+        meta = {}  # TODO :: DUMMY
+
+        data = None
+        hostname = (address, port)
+        tick = time.time()
+
+        try:
+            error_indication, error_status, error_index, var_binds = await getCmd(
+                self.snmp_engine,
+                CommunityData(community),
+                UdpTransportTarget(hostname, timeout=timeout, retries=retries),
+                ContextData(),
+                ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
+            )
+
+            if error_indication:
+                print(error_indication)
+                data = -8555
+
+            elif error_status:
+                print('%s at %s' % (
+                    error_status.prettyPrint(),
+                    error_index and var_binds[int(error_index) - 1][0] or '?'
+                )
+                      )
+                data = -8555
+            else:
+                for data in var_binds:
+                    print(' = '.join([x.prettyPrint() for x in data]))
+
+        except Exception as exc:
+            print(
+                "IP : {} - NAME : {} - OID : {} >> {}".format(
+                    address,
+                    name,
+                    oid,
+                    traceback.format_exc()
+                )
+            )
+            logger.captureMessage(
+                "IP : {} - NAME : {} - OID : {} >> {}".format(
+                    address,
+                    name,
+                    oid,
+                    exc
+                )
+            )
+            data = -8555
+
+        finally:
+            result = {name: data}
+
+            self.response.publish(  # TODO
+                module=module,
+                meta_data=meta,
+                **result  # TODO :: handle it
+            )
+            tack = time.time() - tick
+
+            if interval >= (retries * timeout):
+                await asyncio.sleep(interval - tack)
+
+            else:
+                await asyncio.sleep(interval)
+
+    async def read_async_semi(self, loop, **kwargs):
         """
-
-        :param loop:
-        :param kwargs:
+        Reading from SNMP with easysnmp lib (sync)
+        :param loop: asyncio loop
+        :param kwargs: Config stuff
         :return:
         """
         oid = kwargs.get('oid', '0.0.0.0.0.0')
@@ -36,9 +114,7 @@ class SNMPReader(object):
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 3)
-
         # meta = kwargs.get('meta', {})
-
         meta = {}  # TODO :: DUMMY
 
         data = None
@@ -76,7 +152,6 @@ class SNMPReader(object):
                     exc
                 )
             )
-
             data = -8555
 
         finally:
