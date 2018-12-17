@@ -62,7 +62,7 @@ class SNMPReader(object):
                 for var_bind in var_binds:
                     data = float(var_bind[1])
 
-        except Exception as exc:
+        except:
             print(
                 "IP : {} - NAME : {} - OID : {} >> {}".format(
                     address,
@@ -76,7 +76,7 @@ class SNMPReader(object):
                     address,
                     name,
                     oid,
-                    exc
+                    traceback.format_exc()
                 )
             )
             data = -8555
@@ -135,7 +135,7 @@ class SNMPReader(object):
                 ).value
             )
 
-        except Exception as exc:
+        except:
             print(
                 "IP : {} - NAME : {} - OID : {} >> {}".format(
                     address,
@@ -149,7 +149,7 @@ class SNMPReader(object):
                     address,
                     name,
                     oid,
-                    exc
+                    traceback.format_exc()
                 )
             )
             data = -8555
