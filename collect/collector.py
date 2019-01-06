@@ -3,7 +3,7 @@ import time
 import traceback
 
 from easydict import EasyDict as edict
-from easysnmp import snmp_get
+# from easysnmp import snmp_get
 from pysnmp.hlapi.asyncio import *
 
 from response.response import Response
@@ -62,6 +62,10 @@ class SNMPReader(object):
                 for var_bind in var_binds:
                     data = float(var_bind[1])
 
+        except asyncio.CancelledError:
+            data = -8555
+            raise asyncio.CancelledError()
+
         except:
             print(
                 "IP : {} - NAME : {} - OID : {} >> {}".format(
@@ -84,10 +88,10 @@ class SNMPReader(object):
         finally:
             result = {name: data}
 
-            self.response.publish(  # TODO
+            self.response.publish(
                 module=module,
                 meta_data=meta,
-                **result  # TODO :: handle it
+                **result
             )
             tack = time.time() - tick
 

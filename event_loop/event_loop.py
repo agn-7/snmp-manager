@@ -1,10 +1,12 @@
 import asyncio
 import uvloop
 import async_timeout
+import time
 
 from utility.logger import Logging
 from read_conf.read_configuration import get_config
 from collect.collector import SNMPReader
+from utility.utility import Utility
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -16,6 +18,7 @@ class EventLoop(object):
     def __init__(self):
         self.loop = None
         self.snmp_reader = SNMPReader()
+        self.util = Utility()
 
     @staticmethod
     def get_timeout(sleep, timeout):
@@ -52,73 +55,69 @@ class EventLoop(object):
             except KeyboardInterrupt:
                 loop.close()
 
-    def init_loop(self, configs, forever=True):
+    def run_once(self):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop event loop policy.'''
 
         loop = asyncio.get_event_loop()
-
-        if not forever:
-            '''Run once.'''
-            futures = [asyncio.ensure_future(self.snmp_reader.read_async_full(loop, **conf))
-                       for conf in configs]
-
-        else:
-            '''Run forever.'''
-            # futures = [asyncio.ensure_future(self.read_forever(loop, **conf))
-            #            for conf in configs]
-            '''OR'''
-            futures = [loop.create_task(self.read_forever(loop, **conf))
-                       for conf in configs]
-
-        return loop, futures
-
-    def run_once(self):
         configs = get_config()
 
         if configs:
-            loop, futures = self.init_loop(configs, forever=False)
+            futures = [asyncio.ensure_future(self.snmp_reader.read_async_full(loop, **conf))
+                       for conf in configs]
             result = loop.run_until_complete(asyncio.gather(*futures))
             print(result)
 
         else:
             raise NotImplementedError()
 
+    async def restart_loop(self):
+        loop = asyncio.get_event_loop()
+        _, cache = self.util.is_config_exist()
+
+        while True:
+            config_path, stamp = self.util.is_config_exist()
+
+            if stamp != cache:
+                cache = stamp
+                loop.stop()
+                print('Loop Restarted.')
+
+            await asyncio.sleep(10)
+
     def run_forever(self):
-        configs = get_config()
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        '''Set the uvloop event loop policy.'''
 
-        if configs:
-            loop, _ = self.init_loop(configs, forever=True)
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.restart_loop())
 
-            try:
-                loop.run_forever()
+        while True:
+            print(1)
+            configs = get_config()
+            if configs:
+                futures = [loop.create_task(self.read_forever(loop, **conf))
+                           for conf in configs]
+                try:
+                    loop.run_forever()
 
-            except KeyboardInterrupt:
-                pass
+                    for f in futures:
+                        f.cancel()
 
-            finally:
-                print("Closing Loop")
-                loop.close()
+                except KeyboardInterrupt:
+                    loop.close()
 
-        else:
-            raise NotImplementedError()
+                except asyncio.CancelledError:
+                    print('Tasks has been canceled')
+                    loop.close()
+
+                except Exception as exc:
+                    print(exc)
+
+            else:
+                time.sleep(5)
+                logger.captureMessage("Waiting for SNMP configuration ...")
 
 
-if __name__ == '__main__':  # TODO :: Test.
-    snmp_configurations = [
-        {'interval': 5, 'oid': '1.3.6.3.2.4'},
-        {'interval': 6, 'oid': '1.3.6.3.5.8'},
-    ]  # TODO :: DUMMY
-    loop, futures = EventLoop().init_loop(snmp_configurations, forever=True)
-
-    try:
-        loop.run_forever()
-        # res = loop.run_until_complete(asyncio.gather(*futures))
-        # print(res)
-
-    except KeyboardInterrupt:
-        pass
-
-    finally:
-        print("Closing Loop")
-        loop.close()
+if __name__ == '__main__':
+    EventLoop().run_forever()

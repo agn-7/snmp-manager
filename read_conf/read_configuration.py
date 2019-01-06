@@ -1,4 +1,5 @@
 import json
+import os
 
 from pprint import pprint
 from easydict import EasyDict as edict
@@ -50,11 +51,27 @@ def get_config():
     configs = None
 
     try:
-        with open('config.json') as json_file:
-            configs = json.load(json_file)
+        if 'CONFIG_PATH' in os.environ:
+            config_path = os.environ['CONFIG_PATH']
+        elif os.path.exists("goweb/config.json"):
+            config_path = 'goweb/config.json'
+        elif os.path.exists("../goweb/config.json"):
+            config_path = '../goweb/config.json'
+        else:
+            raise ValueError("Cannot find a config file!")
 
-        configs = flatten(configs)
-        # pprint(configs)
+        with open(config_path) as json_file:
+            configs = json.load(json_file)
+            configs = flatten(configs)
+            # pprint(configs)
+
+    except KeyError as ke:
+        logger.captureMessage(ke)
+        logger.captureException()
+
+    except IOError as ie:
+        logger.captureMessage(ie)
+        logger.captureException()
 
     except Exception as exc:
         logger.captureMessage(exc)

@@ -1,7 +1,39 @@
 import time
+import os
+
+from .logger import Logging
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
+
+logger = Logging().sentry_logger()
+
+
+class Utility(object):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def is_config_exist():
+        config_path = None
+        stamp = 0
+        path = "goweb/config.json"
+
+        if 'CONFIG_PATH' in os.environ:
+            config_path = os.environ['CONFIG_PATH']
+        elif os.path.exists(path):
+            config_path = path
+        elif os.path.exists("../" + path):
+            config_path = "../" + path
+        elif os.path.exists("../../" + path):
+            config_path = "../../" + path
+        else:
+            logger.captureMessage("Cannot find a config file!")
+
+        if config_path is not None:
+            stamp = os.stat(config_path).st_mtime
+
+        return config_path, stamp
 
 
 class MWT(object):

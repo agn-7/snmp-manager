@@ -58,7 +58,7 @@ class RedisResponse(ResponseAbstract):
                 'tags': meta_data
             }
 
-            pprint(result)  # TODO :: make it to the logger if is necessary.
+            # pprint(result)  # TODO :: make it to the logger if is necessary.
 
             try:
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO

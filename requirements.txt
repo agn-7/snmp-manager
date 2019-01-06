@@ -2,7 +2,7 @@ pyserial
 pymodbus==2.1.0
 easydict
 pyzmq
-easysnmp
+#easysnmp
 uvloop
 raven
 async-timeout

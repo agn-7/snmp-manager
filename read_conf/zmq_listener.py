@@ -70,16 +70,16 @@ class Getter(object):
                 print('Before recv')
 
                 try:
-                    configs = sock.recv_json(flags=zmq.NOBLOCK)  # TODO :: NOBLOCK.
+                    configs = sock.recv_json()
                     print('After recv')
                     '''Get the Battery-Monitoring json configs.'''
+
                     time.sleep(1e-1)
                     print('BM Configurations received.')
                     self.store_config_file(configs)
                     print('BM Config stored in the config.json file.')
 
                 except zmq.ZMQError as e:
-
                     if e.errno == zmq.EAGAIN:
                         print('state changed since poll event')
 
