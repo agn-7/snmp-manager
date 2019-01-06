@@ -17,7 +17,7 @@ class Utility(object):
     def is_config_exist():
         config_path = None
         stamp = 0
-        path = "goweb/config.json"
+        path = "config.json"
 
         if 'CONFIG_PATH' in os.environ:
             config_path = os.environ['CONFIG_PATH']
