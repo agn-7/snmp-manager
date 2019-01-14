@@ -15,13 +15,13 @@ class SNMP(Getter):
 
     def main(self):
         # thread_ = Thread(target=self.listen)
-        thread_ = Thread(target=self.always_listen, args=('SUB',))
+        thread_ = Thread(target=self.always_listen, args=('REP',))
         thread_.daemon = True
-        # thread_.start()  # TODO
+        thread_.start()
 
         EventLoop().run_forever()
 
-        # thread_.join()  # TODO
+        thread_.join()
 
 
 if __name__ == "__main__":

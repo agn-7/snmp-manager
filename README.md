@@ -8,5 +8,10 @@ sudo apt-get install git
 #### **2. Clone project from the Git-Server:**
 
 ```bash
-git clone http://85.15.42.213:81/benyamin_7/battery-monitoring.git
+git clone http://192.168.1.130:81/infravision/ivms/back-end/snmp-collector.git
+
+```
+#### 3. Up and build its docker container:
+```bash
+docker-compose up --build
 ```
