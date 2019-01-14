@@ -93,7 +93,6 @@ class EventLoop(object):
         loop.create_task(self.restart_loop())
 
         while True:
-            print(1)
             configs = get_config()
             if configs:
                 futures = [loop.create_task(self.read_forever(loop, **conf))

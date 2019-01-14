@@ -69,8 +69,7 @@ class Getter(object):
             # sock.setsockopt(zmq.RCVHWM, 1)
             sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
             print('Listener Initialized.')
-            # logger.captureMessage('Listener Initialized.')
-            sock.bind("tcp://*:6667")
+            sock.bind("tcp://*:6667")  # TODO :: maybe 6669
 
         except zmq.ZMQError:
             logger.captureException()

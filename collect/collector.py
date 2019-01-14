@@ -3,7 +3,6 @@ import time
 import traceback
 
 from easydict import EasyDict as edict
-# from easysnmp import snmp_get
 from pysnmp.hlapi.asyncio import *
 
 from response.response import Response
@@ -101,77 +100,3 @@ class SNMPReader(object):
             else:
                 await asyncio.sleep(interval)
 
-    async def read_async_semi(self, loop, **kwargs):
-        """
-        Reading from SNMP with easysnmp lib (sync)
-        :param loop: asyncio loop
-        :param kwargs: Config stuff
-        :return:
-        """
-        oid = kwargs.get('oid', '0.0.0.0.0.0')
-        name = kwargs.get('tag_name', 'Default Name')
-        module = kwargs.get('name', 'SNMP Device')
-        address = kwargs.get('address', 1)
-        community = kwargs.get('community', 'public')
-        version = kwargs.get('version', 1)
-        port = kwargs.get('port', 161)
-        timeout = kwargs.get('timeout', 1)
-        retries = kwargs.get('retries', 3)
-        interval = kwargs.get('sleep_time', 3)
-        # meta = kwargs.get('meta', {})
-        meta = {}  # TODO :: DUMMY
-
-        data = None
-        tick = time.time()
-
-        # async with async_timeout.timeout(timeout * retries):
-
-        try:
-            data = float(
-                snmp_get(  # TODO :: Check the await at here.
-                    oid,
-                    hostname=address,
-                    community=community,
-                    version=version,
-                    remote_port=port,
-                    timeout=timeout,
-                    retries=retries,
-                ).value
-            )
-
-        except:
-            print(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    traceback.format_exc()
-                )
-            )
-            logger.captureMessage(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    traceback.format_exc()
-                )
-            )
-            data = -8555
-
-        finally:
-            result = {name: float(data)}
-
-            self.response.publish(  # TODO
-                module=module,
-                meta_data=meta,
-                **result  # TODO :: handle it
-            )
-            tack = time.time() - tick
-
-            if interval >= (retries * timeout):
-                # await asyncio.sleep(interval - tack, loop=loop)
-                await asyncio.sleep(interval - tack)
-
-            else:
-                # await asyncio.sleep(interval, loop=loop)
-                await asyncio.sleep(interval)
