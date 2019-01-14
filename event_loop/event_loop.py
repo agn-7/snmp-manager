@@ -55,6 +55,9 @@ class EventLoop(object):
             except KeyboardInterrupt:
                 loop.close()
 
+            except Exception as exc:
+                print(exc)
+
     def run_once(self):
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop event loop policy.'''

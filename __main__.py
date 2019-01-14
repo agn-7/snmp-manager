@@ -14,7 +14,6 @@ class SNMP(Getter):
         super().__init__()
 
     def main(self):
-        # thread_ = Thread(target=self.listen)
         thread_ = Thread(target=self.always_listen, args=('REP',))
         thread_.daemon = True
         thread_.start()
