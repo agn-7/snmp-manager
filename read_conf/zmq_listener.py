@@ -12,7 +12,7 @@ logger = Logging().sentry_logger()
 
 class Getter(object):
     def __init__(self):
-        pass
+        self.socket_zmq = None
 
     @staticmethod
     def store_config_file(config):
@@ -50,6 +50,18 @@ class Getter(object):
                 print('In sub')
                 sock = context.socket(zmq.SUB)
                 sock.setsockopt(zmq.SUBSCRIBE, b'')
+
+            elif method == 'REP':
+                if self.socket_zmq is not None:
+                    print("ZMQ is waiting for config...")
+                    configs = self.socket_zmq.recv_json()
+                    self.socket_zmq.send_json({'status': 200})
+                    self.store_config_file(configs)
+                    self.always_listen()
+
+                else:
+                    self.get_zmq()
+                    self.always_listen(method='REP')
 
             else:
                 raise NotImplementedError()
@@ -140,6 +152,8 @@ class Getter(object):
         self.store_config_file(configs)
         print('BM Config stored in the config.json file.')
 
-
-if __name__ == "__main__":
-    Getter().listen()
+    def get_zmq(self):
+        if not self.socket_zmq:
+            context = zmq.Context()
+            self.socket_zmq = context.socket(zmq.REP)
+            self.socket_zmq.bind("tcp://*:6669")
