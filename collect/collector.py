@@ -30,8 +30,19 @@ class SNMPReader(object):
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 3)
-        # meta = kwargs.get('meta', {})
-        meta = {}  # TODO :: DUMMY
+        servers = kwargs.get('servers', [{'name': 'default', 'ip': '127.0.0.1', 'port': 9001}])
+        pipeline_ip = kwargs.get('pipeline_ip', '127.0.0.1')
+        pipeline_port = kwargs.get('pipeline_port', 9001)
+        meta = kwargs.get('meta', {})
+
+        servers_obj = []
+        for server in servers:
+            servers_obj.append(edict(server))
+
+        if pipeline_ip is not '127.0.0.1':
+            for server in servers_obj:
+                server.ip = pipeline_ip
+                server.port = pipeline_port
 
         data = None
         hostname = (address, port)
@@ -90,6 +101,7 @@ class SNMPReader(object):
             self.response.publish(
                 module=module,
                 meta_data=meta,
+                servers=servers_obj,
                 **result
             )
             tack = time.time() - tick
