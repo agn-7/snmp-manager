@@ -13,5 +13,4 @@ services:
         - 9001
 
         volumes:
-        - "./model/modbus.db:/app/model/modbus.db:rw"
         - /etc/localtime:/etc/localtime:ro
