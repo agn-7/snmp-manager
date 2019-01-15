@@ -93,7 +93,6 @@ class EventLoop(object):
         loop.create_task(self.restart_loop())
 
         while True:
-            print(11111)
             configs = get_config()
             print(configs)
             if configs:

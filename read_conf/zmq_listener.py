@@ -1,6 +1,7 @@
 import zmq
 import time
 import json
+import os
 
 from utility.logger import Logging
 
@@ -24,11 +25,29 @@ class Getter(object):
         print('writer', config)
 
         try:
-            with open('config.json', 'w') as outfile:
+            if 'CONFIG_PATH' in os.environ:
+                config_path = os.environ['CONFIG_PATH']
+            elif os.path.exists("config.json"):
+                config_path = 'config.json'
+            elif os.path.exists("../config.json"):
+                config_path = '../config.json'
+            else:
+                raise ValueError("Cannot find a config file!")
+
+            with open(config_path, 'w') as outfile:
                 json.dump(config, outfile)
+
+        except KeyError as ke:
+            logger.captureMessage(ke)
+            logger.captureException()
+
+        except IOError as ie:
+            logger.captureMessage(ie)
+            logger.captureException()
 
         except Exception as exc:
             logger.captureMessage(exc)
+            logger.captureException()
 
     def always_listen(self, method='PULL'):
         """
