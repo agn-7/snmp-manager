@@ -57,11 +57,11 @@ class Getter(object):
                     configs = self.socket_zmq.recv_json()
                     self.socket_zmq.send_json({'status': 200})
                     self.store_config_file(configs)
-                    self.always_listen()
+                    self.always_listen(method='REP')  # Recursive
 
                 else:
                     self.get_zmq()
-                    self.always_listen(method='REP')
+                    self.always_listen(method='REP')  # Recursive
 
             else:
                 raise NotImplementedError()
