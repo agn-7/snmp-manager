@@ -5,6 +5,7 @@ from datetime import datetime
 from time import sleep
 
 from utility.logger import Logging
+from zmq_tools import create_zmq
 
 
 __author__ = 'aGn'
@@ -39,7 +40,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            pprint(result)  # TODO :: make it to the logger if is necessary.
+            # pprint(result)  # TODO :: make it to the logger if is necessary.
 
             try:
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
@@ -48,8 +49,6 @@ class Response(object):
                 print('Space if full >> {}'.format(exc))
                 sleep(1)
 
-            # sleep()  # TODO :: maybe need a bit sleeping time.
-
     def publish(
             self,
             module, meta_data, servers,
@@ -57,11 +56,10 @@ class Response(object):
     ):
 
         for server in servers:
-            context = zmq.Context()
-            socket = context.socket(zmq.PUB)
-            zmq_address = "tcp://{}:{}".format(server.ip, server.port)
-            socket.connect(zmq_address)
-            self.socket = socket
+            self.socket = create_zmq.CreateZMQ().get_zmq_client(
+                zmq_type=zmq.PUB,
+                ip=server.ip, port=server.port
+            )
 
             self.publisher(
                 module, meta_data,
