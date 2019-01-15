@@ -36,8 +36,6 @@ class Getter(object):
         the .store_config_file() method.
         :return:
         """
-        sock = None
-
         try:
             context = zmq.Context()
 
@@ -59,21 +57,11 @@ class Getter(object):
             print('Listener Initialized.')
             sock.bind("tcp://*:6669")
 
-        except zmq.ZMQError as e:
-            if e.errno == zmq.EAGAIN:
-                print('state changed since poll event')
-            else:
-                print("RECV Error: %s" % zmq.strerror(e.errno))
+            while True:
+                print('Waiting for json configs ...')
 
-            self.always_listen(method)  # Recursive.
-
-        while True:
-            print('Waiting for json configs ...')
-
-            if sock:
-                print('Before recv')
-
-                try:
+                if sock:
+                    print('Before recv')
                     configs = sock.recv_json()
                     '''Get the Battery-Monitoring json configs.'''
 
@@ -84,14 +72,18 @@ class Getter(object):
                     if method is 'REP':
                         sock.send_json({'status': 200})
 
-                except zmq.ZMQError as e:
-                    if e.errno == zmq.EAGAIN:
-                        print('state changed since poll event')
-                    else:
-                        print("RECV Error: %s" % zmq.strerror(e.errno))
+                else:
+                    print('An error occurred in ZMQ socket creation.')
+                    logger.captureMessage('An error occurred in ZMQ socket creation.')
+                    time.sleep(5)
+                    self.always_listen(method)  # Recursive.
 
+        except zmq.ZMQError as e:
+            if e.errno == zmq.EAGAIN:
+                print('state changed since poll event')
             else:
-                print('An error occurred in ZMQ socket creation.')
-                logger.captureMessage('An error occurred in ZMQ socket creation.')
-                time.sleep(5)
-                self.always_listen(method)  # Recursive.
+                print("RECV Error: %s" % zmq.strerror(e.errno))
+
+            time.sleep(5)
+            self.always_listen(method)  # Recursive.
+
