@@ -37,31 +37,19 @@ class Getter(object):
         :return:
         """
         sock = None
-        print('In listener')
 
         try:
             context = zmq.Context()
 
             if method == 'PULL':
-                print('In pull')
                 sock = context.socket(zmq.PULL)
 
             elif method == 'SUB':
-                print('In sub')
                 sock = context.socket(zmq.SUB)
                 sock.setsockopt(zmq.SUBSCRIBE, b'')
 
             elif method == 'REP':
-                if self.socket_zmq is not None:
-                    print("ZMQ is waiting for config...")
-                    configs = self.socket_zmq.recv_json()
-                    self.socket_zmq.send_json({'status': 200})
-                    self.store_config_file(configs)
-                    self.always_listen(method='REP')  # Recursive
-
-                else:
-                    self.get_zmq()
-                    self.always_listen(method='REP')  # Recursive
+                sock = context.socket(zmq.REP)
 
             else:
                 raise NotImplementedError()
@@ -69,10 +57,15 @@ class Getter(object):
             # sock.setsockopt(zmq.RCVHWM, 1)
             sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
             print('Listener Initialized.')
-            sock.bind("tcp://*:6669")  # TODO :: before was 6667
+            sock.bind("tcp://*:6669")
 
-        except zmq.ZMQError:
-            logger.captureException()
+        except zmq.ZMQError as e:
+            if e.errno == zmq.EAGAIN:
+                print('state changed since poll event')
+            else:
+                print("RECV Error: %s" % zmq.strerror(e.errno))
+
+            self.always_listen(method)  # Recursive.
 
         while True:
             print('Waiting for json configs ...')
@@ -82,18 +75,18 @@ class Getter(object):
 
                 try:
                     configs = sock.recv_json()
-                    print('After recv')
                     '''Get the Battery-Monitoring json configs.'''
 
-                    time.sleep(1e-1)
-                    print('BM Configurations received.')
+                    print('Configurations received.')
                     self.store_config_file(configs)
-                    print('BM Config stored in the config.json file.')
+                    print('Config stored in the config.json file.')
+
+                    if method is 'REP':
+                        sock.send_json({'status': 200})
 
                 except zmq.ZMQError as e:
                     if e.errno == zmq.EAGAIN:
                         print('state changed since poll event')
-
                     else:
                         print("RECV Error: %s" % zmq.strerror(e.errno))
 
@@ -102,57 +95,3 @@ class Getter(object):
                 logger.captureMessage('An error occurred in ZMQ socket creation.')
                 time.sleep(5)
                 self.always_listen(method)  # Recursive.
-
-    def listen(self, method='PULL'):
-        """
-        Listen to the ZMQ.PUSH from Django side to get the BM configuration then calling .store_config_file() method.
-        :return:
-        """
-        sock = None
-
-        try:
-            context = zmq.Context()
-
-            if method == 'PULL':
-                sock = context.socket(zmq.PULL)
-
-            elif method == 'SUB':
-                sock = context.socket(zmq.SUB)
-                sock.setsockopt(zmq.SUBSCRIBE, b'')
-
-            else:
-                raise NotImplementedError()
-
-            # sock.setsockopt(zmq.RCVHWM, 1)
-            sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            print('Listener Initialized.')
-            # logger.captureMessage('Listener Initialized.')
-            sock.bind("tcp://*:6667")
-
-        except zmq.ZMQError:
-            logger.captureException()
-
-        configs = None
-
-        while configs is None:
-            print('Waiting for json configs ...')
-
-            if sock:
-                configs = sock.recv_json(flags=zmq.NOBLOCK)
-                '''Get the Battery-Monitoring json configs.'''
-                time.sleep(1e-1)
-
-            else:
-                logger.captureMessage('An error occurred in ZMQ socket creation.')
-                time.sleep(5)
-                self.listen(method)  # Recursive.
-
-        print('BM Configurations received.')
-        self.store_config_file(configs)
-        print('BM Config stored in the config.json file.')
-
-    def get_zmq(self):
-        if not self.socket_zmq:
-            context = zmq.Context()
-            self.socket_zmq = context.socket(zmq.REP)
-            self.socket_zmq.bind("tcp://*:6669")
