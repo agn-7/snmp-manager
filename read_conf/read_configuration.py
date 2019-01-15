@@ -51,7 +51,16 @@ def get_config():
     configs = None
 
     try:
-        with open('config.json') as json_file:
+        if 'CONFIG_PATH' in os.environ:
+            config_path = os.environ['CONFIG_PATH']
+        elif os.path.exists("/app/config.json"):
+            config_path = '/app/config.json'
+        elif os.path.exists("../config.json"):
+            config_path = '../config.json'
+        else:
+            raise ValueError("Cannot find a config file!")
+
+        with open(config_path) as json_file:
             configs = json.load(json_file)
             configs = flatten(configs)
             # pprint(configs)

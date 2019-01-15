@@ -4,6 +4,7 @@ FROM python:3.6-slim
 MAINTAINER Benyamin Jafari <benyamin@infravision.ir>
 
 ENV PYTHONUNBUFFERED 1
+ENV CONFIG_PATH=/app/goweb/config.json
 
 RUN mkdir /app
 WORKDIR /
