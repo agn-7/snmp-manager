@@ -8,9 +8,14 @@ services:
         container_name: snmp_collector
         restart: unless-stopped
         ports:
-        - 6669:6669
+          - 6669:6669
         expose:
-        - 9001
+          - 9001
 
         volumes:
-        - /etc/localtime:/etc/localtime:ro
+          - /etc/localtime:/etc/localtime:ro
+
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "50m
