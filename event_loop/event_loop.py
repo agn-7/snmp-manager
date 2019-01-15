@@ -94,7 +94,6 @@ class EventLoop(object):
 
         while True:
             configs = get_config()
-            print(configs)
             if configs:
                 futures = [loop.create_task(self.read_forever(loop, **conf))
                            for conf in configs]

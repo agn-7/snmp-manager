@@ -57,6 +57,8 @@ def get_config():
             config_path = '/app/config.json'
         elif os.path.exists("../config.json"):
             config_path = '../config.json'
+        elif os.path.exists("config.json"):
+            config_path = 'config.json'
         else:
             raise ValueError("Cannot find a config file!")
 
