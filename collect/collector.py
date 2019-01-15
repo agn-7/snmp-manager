@@ -70,7 +70,14 @@ class SNMPReader(object):
                 data = -8555
             else:
                 for var_bind in var_binds:
-                    data = float(var_bind[1])
+                    try:
+                        data = float(var_bind[1])
+                    except ValueError as ve:
+                        print(ve, oid, name, address)
+                        traceback.format_exc()
+                        str_error = str(ve) + name + oid + address
+                        logger.captureMessage(str_error)
+                        data = -8555
 
         except asyncio.CancelledError:
             data = -8555
