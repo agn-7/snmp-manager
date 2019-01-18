@@ -15,6 +15,7 @@ class Singleton(type):
 
 
 class CreateZMQ(metaclass=Singleton):
+    """ZMQ socket Creator which is use Singleton pattern."""
     def __init__(self):
         self.socket = None
 
@@ -25,6 +26,13 @@ class CreateZMQ(metaclass=Singleton):
         self.socket.connect(zmq_address)
 
     def get_zmq_client(self, zmq_type, ip, port):
+        """
+
+        :param zmq_type: Type of ZMQ
+        :param ip: ZMQ IP
+        :param port: ZMQ Port
+        :return: A ZMQ socket.
+        """
         if self.socket:
             return self.socket
 

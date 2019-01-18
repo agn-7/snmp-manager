@@ -16,6 +16,7 @@ logger = Logging().sentry_logger()
 
 
 class EventLoop(object):
+    """AsyncIO EventLoop"""
     def __init__(self):
         self.loop = None
         self.snmp_reader = SNMPReader()
@@ -23,6 +24,12 @@ class EventLoop(object):
 
     @staticmethod
     def get_timeout(sleep, timeout):
+        """
+        Set a trusted timeout with gathering the sleep time and the timeout.
+        :param sleep: Declared sleep.
+        :param timeout: Declared timeout
+        :return: Trusted Timeout.
+        """
         if sleep < timeout:
             total_time = sleep + timeout
 
@@ -33,9 +40,9 @@ class EventLoop(object):
 
     async def read_forever(self, loop, **kwargs):
         """
-
-        :param loop:
-        :param kwargs:
+        Forever worker to collecting the SNMP(s) device.
+        :param loop: asyncio loop.
+        :param kwargs: The below parameters.
         :return:
         """
         timeout = kwargs.get('timeout', 1)
@@ -45,7 +52,6 @@ class EventLoop(object):
 
         while True:
             try:
-                # async with async_timeout.timeout(total_timeout, loop=loop) as cm:
                 async with async_timeout.timeout(total_timeout) as cm:
                     await self.snmp_reader.read_async_full(loop, **kwargs)
 
@@ -57,6 +63,8 @@ class EventLoop(object):
                 loop.close()
 
     def run_once(self):
+        """Run once method in asyncio tech."""
+
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop event loop policy.'''
 
@@ -73,6 +81,7 @@ class EventLoop(object):
             raise NotImplementedError()
 
     async def restart_loop(self):
+        """An asynchronous loop re-starter worker to monitor the change in the config file."""
         loop = asyncio.get_event_loop()
         _, cache = self.util.is_config_exist()
 
@@ -87,6 +96,8 @@ class EventLoop(object):
             await asyncio.sleep(10)
 
     def run_forever(self):
+        """Forever event-loop with the loop re-starter ability in asyncio tech."""
+
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         '''Set the uvloop event loop policy.'''
 

@@ -10,6 +10,7 @@ logger = Logging().sentry_logger()
 
 
 class Utility(object):
+    """Utility tools class."""
     def __init__(self):
         pass
 

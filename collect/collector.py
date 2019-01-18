@@ -15,11 +15,18 @@ logger = Logging().sentry_logger()
 
 
 class SNMPReader(object):
+    """SNMP Collector."""
     def __init__(self):
         self.response = Response()
         self.snmp_engine = SnmpEngine()
 
     async def read_async_full(self, loop, **kwargs):
+        """
+        A SNMP collector which is fully asynchronous with asyncio methods.
+        :param loop: asyncio loop.
+        :param kwargs: Below parameters.
+        :return:
+        """
         oid = kwargs.get('oid', '0.0.0.0.0.0')
         name = kwargs.get('tag_name', 'Default Name')
         module = kwargs.get('name', 'SNMP Device')

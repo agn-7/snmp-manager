@@ -15,6 +15,7 @@ logger = Logging().sentry_logger()
 
 
 class Response(object):
+    """Response Class"""
     def __init__(self):
         self.socket = None
 
@@ -25,7 +26,6 @@ class Response(object):
     ):
         """
         Packing Json file in order to sending on ZMQ pipeline.
-        :param config: B.M received config.
         :param module:
         :param meta_data:
         :param kwargs: Battery values result.
@@ -56,7 +56,14 @@ class Response(object):
             module, meta_data, servers,
             **kwargs
     ):
-
+        """
+        Call the publisher method to send the result on the subscriber servers by ZMQ.
+        :param module:
+        :param meta_data:
+        :param servers:
+        :param kwargs:
+        :return:
+        """
         for server in servers:
             self.socket = create_zmq.CreateZMQ().get_zmq_client(
                 zmq_type=zmq.PUB,

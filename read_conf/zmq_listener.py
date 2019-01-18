@@ -13,6 +13,7 @@ logger = Logging().sentry_logger()
 
 
 class Getter(object):
+    """SNMP Config Getter."""
     def __init__(self):
         self.socket_zmq = None
 
