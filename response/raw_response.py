@@ -64,7 +64,7 @@ class RawResponse(ResponseAbstract):
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
-                print('Space if full >> {}'.format(exc))
+                logger.captureMessage('Space if full >> {}'.format(exc))
                 time.sleep(1)
 
                 # time.sleep(1e-1)  # TODO :: maybe need a bit sleeping time.

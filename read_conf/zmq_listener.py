@@ -2,6 +2,7 @@ import zmq
 import time
 import json
 import os
+import traceback
 
 from utility.logger import Logging
 
@@ -22,8 +23,6 @@ class Getter(object):
         :param config: Received BM Json config from Django side.
         :return:
         """
-        print('writer', config)
-
         try:
             if 'CONFIG_PATH' in os.environ:
                 config_path = os.environ['CONFIG_PATH']
@@ -73,7 +72,7 @@ class Getter(object):
 
             # sock.setsockopt(zmq.RCVHWM, 1)
             sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            print('Listener Initialized.')
+            print('The Listener Initialized.')
             sock.bind("tcp://*:6669")
 
             while True:
@@ -99,10 +98,13 @@ class Getter(object):
 
         except zmq.ZMQError as e:
             if e.errno == zmq.EAGAIN:
-                print('state changed since poll event')
+                logger.captureMessage('state changed since poll event')
             else:
-                print("RECV Error: %s" % zmq.strerror(e.errno))
+                logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
 
             time.sleep(5)
             self.always_listen(method)  # Recursive.
 
+        except Exception:
+            logger.captureMessage(traceback.format_exc())
+            self.always_listen(method)  # Recursive.

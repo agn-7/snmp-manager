@@ -64,7 +64,7 @@ class InfluxResponse(ResponseAbstract):
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
-                print('Space if full >> {}'.format(exc))
+                logger.captureMessage('Space if full >> {}'.format(exc))
                 sleep(1)
 
             # sleep()  # TODO :: maybe need a bit sleeping time.

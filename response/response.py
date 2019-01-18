@@ -46,7 +46,9 @@ class Response(object):
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
-                print('Space if full >> {}'.format(exc))
+                logger.captureMessage(
+                    f"Space if full >> {exc}"
+                )
                 sleep(1)
 
     def publish(

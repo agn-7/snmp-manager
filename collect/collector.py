@@ -58,24 +58,28 @@ class SNMPReader(object):
             )
 
             if error_indication:
-                print(error_indication)
+                logger.captureMessage(error_indication)
                 data = -8555
 
             elif error_status:
+                logger.captureMessage(
+                    f"{error_status.prettyPrint()} at "
+                    f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
+
+                )
                 print('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
                 )
                       )
                 data = -8555
+
             else:
                 for var_bind in var_binds:
                     try:
                         data = float(var_bind[1])
-                    except ValueError as ve:
-                        print(ve, oid, name, address)
-                        traceback.format_exc()
-                        str_error = str(ve) + name + oid + address
+                    except ValueError:
+                        str_error = name + oid + address + '\n' + traceback.format_exc()
                         logger.captureMessage(str_error)
                         data = -8555
 
@@ -83,15 +87,7 @@ class SNMPReader(object):
             data = -8555
             raise asyncio.CancelledError()
 
-        except:
-            print(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    traceback.format_exc()
-                )
-            )
+        except Exception:
             logger.captureMessage(
                 "IP : {} - NAME : {} - OID : {} >> {}".format(
                     address,

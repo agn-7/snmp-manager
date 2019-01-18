@@ -24,7 +24,7 @@ class SNMP(Getter):
 
 
 if __name__ == "__main__":
-    print('SNMP Begin')
+    print('SNMP Begins')
 
     try:
         SNMP().main()
