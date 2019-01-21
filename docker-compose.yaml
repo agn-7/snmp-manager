@@ -14,7 +14,7 @@ services:
 
         volumes:
           - /etc/localtime:/etc/localtime:ro
-          - "./config.json:/app/config.json"
+          - "./config.json:/app/config.json:rwx"
 
         logging:
           driver: "json-file"
