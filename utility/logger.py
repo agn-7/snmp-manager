@@ -51,5 +51,5 @@ class Logging(object):
     def sentry_logger():
         """Sentry logger."""
         return Client(
-            'http://e627c6d4737d4970a095e2b5c95a0269:7fca1cacbfdd4d2298618663668faba0@192.168.1.136/2'
+            'http://3c50d4696400490daa1781671331221b@192.168.1.136/5'
         )
