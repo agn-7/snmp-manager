@@ -86,7 +86,8 @@ class SNMPReader(object):
                     try:
                         data = float(var_bind[1])
                     except ValueError:
-                        str_error = name + oid + address + '\n' + traceback.format_exc()
+                        str_error = f"tags_name: {name} OID: {oid} IP: {address} '\n' " \
+                                    f"{traceback.format_exc()}"
                         logger.captureMessage(str_error)
                         data = -8555
 
