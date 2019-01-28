@@ -90,8 +90,8 @@ class EventLoop(object):
 
             if stamp != cache:
                 cache = stamp
+                print('Loop will be restarted.')
                 loop.stop()
-                print('Loop Restarted.')
 
             await asyncio.sleep(10)
 
