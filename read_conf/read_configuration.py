@@ -67,15 +67,7 @@ def get_config():
             configs = flatten(configs)
             # pprint(configs)
 
-    except KeyError as ke:
-        logger.captureMessage(ke)
-        logger.captureException()
-
-    except IOError as ie:
-        logger.captureMessage(ie)
-        logger.captureException()
-
-    except Exception as exc:
+    except (KeyError, IOError, FileNotFoundError, Exception) as exc:
         logger.captureMessage(exc)
         logger.captureException()
 
