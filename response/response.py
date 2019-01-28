@@ -40,7 +40,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            pprint(result)  # TODO :: make it to the logger if is necessary.
+            pprint({name: data})  # TODO :: make it to the logger if is necessary.
 
             try:
                 self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
@@ -69,7 +69,7 @@ class Response(object):
                 zmq_type=zmq.PUB,
                 ip=server.ip, port=server.port
             )
-
+            print(server.ip, server.port)
             self.publisher(
                 module, meta_data,
                 **kwargs
