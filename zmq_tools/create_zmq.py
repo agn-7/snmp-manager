@@ -43,3 +43,11 @@ class CreateZMQ(metaclass=Singleton):
         else:
             self._create_zmq(zmq_type=zmq_type, ip=ip, port=port)
             return self.socket
+
+
+def make_socket(ip, port):
+    con = zmq.Context()
+    sock = con.socket(zmq.PUB)
+    adrs = f"tcp://{ip}:{port}"
+    sock.connect(adrs)  # TODO
+    return sock

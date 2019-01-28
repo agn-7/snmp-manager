@@ -1,11 +1,13 @@
 import json
 import os
+import zmq
 
 from pprint import pprint
 from easydict import EasyDict as edict
 
 from utility.logger import Logging
 from utility.utility import MWT
+from zmq_tools import create_zmq
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -42,6 +44,14 @@ def flatten(configs):
     return flatten_configs
 
 
+def add_socket(all_config):
+    for conf in all_config:
+        for serv in conf['servers']:
+            serv['socket'] = create_zmq.make_socket(serv['ip'], serv['port'])
+
+    return all_config
+
+
 @MWT(timeout=7)
 def get_config():
     """
@@ -65,7 +75,8 @@ def get_config():
         with open(config_path) as json_file:
             configs = json.load(json_file)
             configs = flatten(configs)
-            # pprint(configs)
+            configs = add_socket(configs)
+            pprint(configs)
 
     except (KeyError, IOError, FileNotFoundError, Exception) as exc:
         logger.captureMessage(exc)

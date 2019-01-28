@@ -17,11 +17,11 @@ logger = Logging().sentry_logger()
 class Response(object):
     """Response Class"""
     def __init__(self):
-        self.socket = None
+        pass
 
     def publisher(
             self,
-            module, meta_data,
+            module, meta_data, server,
             **kwargs
     ):
         """
@@ -43,7 +43,8 @@ class Response(object):
             pprint({name: data})  # TODO :: make it to the logger if is necessary.
 
             try:
-                self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
+                # self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
+                server['socket'].send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
                 logger.captureMessage(
@@ -65,13 +66,8 @@ class Response(object):
         :return:
         """
         for server in servers:
-            self.socket = create_zmq.CreateZMQ().get_zmq_client(
-                zmq_type=zmq.PUB,
-                ip=server.ip, port=server.port
-            )
-            print(server.ip, server.port)
             self.publisher(
-                module, meta_data,
+                module, meta_data, server,
                 **kwargs
             )
 
