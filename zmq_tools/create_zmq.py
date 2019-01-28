@@ -19,11 +19,13 @@ class CreateZMQ(metaclass=Singleton):
     def __init__(self):
         self.socket = None
         self.ip = None
+        self.port = None
 
     def _create_zmq(self, zmq_type, ip, port):
         context = zmq.Context()
         self.socket = context.socket(zmq_type)
         self.ip = ip
+        self.port = port
         zmq_address = f"tcp://{ip}:{port}"
         self.socket.connect(zmq_address)
 
@@ -35,7 +37,7 @@ class CreateZMQ(metaclass=Singleton):
         :param port: ZMQ Port
         :return: A ZMQ socket.
         """
-        if self.socket and self.ip == ip:
+        if self.socket and self.ip == ip and self.port == port:
             return self.socket
 
         else:
