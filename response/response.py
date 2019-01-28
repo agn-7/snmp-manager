@@ -40,7 +40,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            pprint({name: data})  # TODO :: make it to the logger if is necessary.
+            print({name: data}, ' --> ', server['ip'])
 
             try:
                 # self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
