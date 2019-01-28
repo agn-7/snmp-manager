@@ -47,7 +47,10 @@ def flatten(configs):
 def add_socket(all_config):
     for conf in all_config:
         for serv in conf['servers']:
-            serv['socket'] = create_zmq.make_socket(serv['ip'], serv['port'])
+            # serv['socket'] = create_zmq.make_socket(serv['ip'], serv['port'])  # TODO :: simple
+            serv['socket'] = create_zmq.CreateZMQ().get_zmq_client(
+                zmq.PUB, serv['ip'], serv['port']
+            )  # TODO  :: single-tone
 
     return all_config
 
