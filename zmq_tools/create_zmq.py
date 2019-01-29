@@ -49,5 +49,5 @@ def make_socket(ip, port):
     con = zmq.Context()
     sock = con.socket(zmq.PUB)
     adrs = f"tcp://{ip}:{port}"
-    sock.connect(adrs)  # TODO
+    sock.connect(adrs)
     return sock

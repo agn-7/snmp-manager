@@ -1,11 +1,9 @@
 import zmq
 
-from pprint import pprint
 from datetime import datetime
 from time import sleep
 
 from utility.logger import Logging
-from zmq_tools import create_zmq
 
 
 __author__ = 'aGn'
