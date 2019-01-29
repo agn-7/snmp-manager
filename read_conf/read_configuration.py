@@ -17,7 +17,7 @@ logger = Logging().sentry_logger()
 
 def flatten(configs):
     """
-    Parsing the received Json config file.
+    Parsing the received Json config file (removing metrics key and spread them in parent key).
     :param configs: Received configs from Django admin.
     :return:
     """
@@ -27,15 +27,13 @@ def flatten(configs):
         parent = {}
 
         for key, val in conf.items():
-
             if key != "metrics":
                 parent[key] = val
 
-            else:
-
+        for key, val in conf.items():
+            if key == 'metrics':
                 for met in conf[key]:
                     flatten_configs.append({})
-
                     for mk, mv in met.items():
                         last_index = len(flatten_configs) - 1
                         flatten_configs[last_index][mk] = mv
