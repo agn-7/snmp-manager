@@ -44,13 +44,43 @@ def flatten(configs):
     return flatten_configs
 
 
-def add_socket(all_config):
+def make_unit_socket(all_config):
+    """
+    Make unit socket per each IP+Port
+    :param all_config: Configuration.
+    :return: A dict which is contain to IP+Port key and unit socket value.
+    """
+    iport = {}
     for conf in all_config:
         for serv in conf['servers']:
-            # serv['socket'] = create_zmq.make_socket(serv['ip'], serv['port'])  # TODO :: simple
-            serv['socket'] = create_zmq.CreateZMQ().get_zmq_client(
+            iport[f"{serv['ip']}:{serv['port']}"] = create_zmq.CreateZMQ().get_zmq_client(
                 zmq.PUB, serv['ip'], serv['port']
-            )  # TODO  :: single-tone
+            )
+
+    return iport
+
+
+def find_its_socket(iport_str, **iport_dict):
+    """
+    Find the desired socket per each IP+Port.
+    :param iport_str: IP+Port
+    :param iport_dict: A dict which is contain to IP+Port key and unit socket value.
+    :return: Desired socket.
+    """
+    return iport_dict.get(iport_str)
+
+
+def add_socket(all_config):
+    """
+    Add socket key value to the servers in the configuration list of dict.
+    :param all_config: Configuration.
+    :return: Updated configuration with socket key value the in servers key.
+    """
+    iport = make_unit_socket(all_config)
+
+    for conf in all_config:
+        for serv in conf['servers']:
+            serv['socket'] = find_its_socket(f"{serv['ip']}:{serv['port']}", **iport)
 
     return all_config
 
