@@ -15,7 +15,7 @@ logger = Logging().sentry_logger()
 class Response(object):
     """Response Class"""
     def __init__(self):
-        pass
+        self.socket = None
 
     def publisher(
             self,
