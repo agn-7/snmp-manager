@@ -28,6 +28,7 @@ class Response(object):
         Packing Json file in order to sending on ZMQ pipeline.
         :param module:
         :param meta_data:
+        :param server: server key and value in configuration that has a ZeroMQ socket.
         :param kwargs: Battery values result.
         :return:
         """
