@@ -1,7 +1,7 @@
 import zmq
+from zmq.auth.thread import ThreadAuthenticator
 
-__author__ = 'Khashayar'
-__email__ = 'khashayar@infravision.ir'
+__author__ = 'Khashayar & aGn'
 
 
 class Singleton(type):
@@ -23,6 +23,13 @@ class CreateZMQ(metaclass=Singleton):
 
     def _create_zmq(self, zmq_type, ip, port):
         context = zmq.Context()
+        # context = zmq.Context.instance()  # TODO
+
+        auth = ThreadAuthenticator(context)
+        auth.start()
+        # auth.allow('127.0.0.1')
+        auth.configure_plain(domain='*', passwords={'admin': 'admin'})
+
         self.socket = context.socket(zmq_type)
         self.ip = ip
         self.port = port
