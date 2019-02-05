@@ -34,6 +34,7 @@ class CreateZMQ(metaclass=Singleton):
         self.ip = ip
         self.port = port
         zmq_address = f"tcp://{ip}:{port}"
+        self.socket.plain_server = True
         self.socket.connect(zmq_address)
 
     def get_zmq_client(self, zmq_type, ip, port):
