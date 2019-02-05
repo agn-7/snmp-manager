@@ -39,7 +39,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            print({name: data}, ' --> ', server['ip'])
+            print({name: data}, ' --> ', server['ip'], ':', server['port'])
 
             try:
                 # self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
