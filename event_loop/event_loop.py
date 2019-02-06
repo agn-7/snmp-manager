@@ -95,6 +95,15 @@ class EventLoop(object):
 
             await asyncio.sleep(10)
 
+    @staticmethod
+    def stop_auth(configs):
+        for conf in configs:
+            for srv in conf['servers']:
+                try:
+                    srv['auth'].stop
+                except Exception as exc:
+                    logger.captureMessage(exc)
+
     def run_forever(self):
         """Forever event-loop with the loop re-starter ability in asyncio tech."""
 
@@ -111,6 +120,7 @@ class EventLoop(object):
                            for conf in configs]
                 try:
                     loop.run_forever()
+                    self.stop_auth(configs)
 
                     for f in futures:
                         f.cancel()

@@ -22,19 +22,17 @@ class CreateZMQ(metaclass=Singleton):
         self.port = None
 
     def _create_zmq(self, zmq_type, ip, port):
-        context = zmq.Context()
+        self.context = zmq.Context()
         # context = zmq.Context.instance()  # TODO
-
-        # auth = ThreadAuthenticator(context)
-        # auth.start()
+        self.auth = ThreadAuthenticator(self.context)
+        self.auth.start()
         # auth.allow('127.0.0.1')
-        # auth.configure_plain(domain='*', passwords={'admin': 'admin'})
-
-        self.socket = context.socket(zmq_type)
+        self.auth.configure_plain(domain='*', passwords={'admin': 'admin'})
+        self.socket = self.context.socket(zmq_type)
         self.ip = ip
         self.port = port
         zmq_address = f"tcp://{ip}:{port}"
-        # self.socket.plain_server = True
+        self.socket.plain_server = True
         self.socket.connect(zmq_address)
 
     def get_zmq_client(self, zmq_type, ip, port):
@@ -46,11 +44,11 @@ class CreateZMQ(metaclass=Singleton):
         :return: A ZMQ socket.
         """
         if self.socket and self.ip == ip and self.port == port:
-            return self.socket
+            return [self.socket, self.auth]
 
         else:
             self._create_zmq(zmq_type=zmq_type, ip=ip, port=port)
-            return self.socket
+            return [self.socket, self.auth]
 
 
 def make_socket(ip, port):

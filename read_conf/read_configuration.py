@@ -78,7 +78,9 @@ def add_socket(all_config):
 
     for conf in all_config:
         for serv in conf['servers']:
-            serv['socket'] = find_its_socket(f"{serv['ip']}:{serv['port']}", **iport)
+            zmq_content = find_its_socket(f"{serv['ip']}:{serv['port']}", **iport)
+            serv['socket'] = zmq_content[0]
+            serv['auth'] = zmq_content[1]
 
     return all_config
 
