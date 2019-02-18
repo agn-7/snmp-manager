@@ -42,9 +42,7 @@ class SNMPReader(object):
         pipeline_port = kwargs.get('pipeline_port', 9001)
         meta = kwargs.get('meta', {})
 
-        servers_obj = []
-        for server in servers:
-            servers_obj.append(edict(server))
+        servers_obj = [edict(server) for server in servers]
 
         if pipeline_ip is not '127.0.0.1':
             for server in servers_obj:
