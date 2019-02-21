@@ -32,7 +32,9 @@ class Getter(object):
             elif os.path.exists("../config.json"):
                 config_path = '../config.json'
             else:
-                raise ValueError("Cannot find a config file!")
+                '''DUMMY'''
+                logger.captureMessage("Cannot find a config file!")
+                config_path = 'config.json'
 
             with open(config_path, 'w') as outfile:
                 json.dump(config, outfile)
@@ -82,6 +84,8 @@ class Getter(object):
                 if sock:
                     print('Before recv')
                     configs = sock.recv_json()
+                    from pprint import pprint
+                    pprint(configs)
                     '''Get the Battery-Monitoring json configs.'''
 
                     print('Configurations received.')
