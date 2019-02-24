@@ -1,4 +1,5 @@
 import zmq
+import traceback
 
 from datetime import datetime
 from time import sleep
@@ -50,6 +51,9 @@ class Response(object):
                     f"Space if full >> {exc}"
                 )
                 sleep(1)
+
+            except Exception:
+                logger.captureMessage(traceback.format_exc())
 
     def publish(
             self,
