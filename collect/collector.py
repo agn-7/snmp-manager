@@ -44,7 +44,7 @@ class SNMPReader(object):
 
         servers_obj = [edict(server) for server in servers]
 
-        if pipeline_ip is not '127.0.0.1':
+        if pipeline_ip != '127.0.0.1':
             for server in servers_obj:
                 server.ip = pipeline_ip
                 server.port = pipeline_port
