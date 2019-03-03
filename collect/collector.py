@@ -41,6 +41,8 @@ class SNMPReader(object):
         pipeline_ip = kwargs.get('pipeline_ip', '127.0.0.1')
         pipeline_port = kwargs.get('pipeline_port', 9001)
         meta = kwargs.get('meta', {})
+        gain = kwargs.get('gain', 1)
+        offset = kwargs.get('offset', 0)
 
         servers_obj = [edict(server) for server in servers]
 
@@ -83,6 +85,8 @@ class SNMPReader(object):
                 for var_bind in var_binds:
                     try:
                         data = float(var_bind[1])
+                        data *= gain
+                        data += offset
                     except ValueError:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
