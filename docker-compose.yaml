@@ -3,7 +3,7 @@ version: '3'
 services:
     snmp_collector:
         build: .
-        image: snmp_collector:1.1.0
+        image: snmp_collector:2.0.0
         network_mode: "host"
         container_name: snmp_collector
         restart: unless-stopped
