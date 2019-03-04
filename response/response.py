@@ -32,6 +32,11 @@ class Response(object):
         :return:
         """
         for name, data in kwargs.items():
+            if data != -8555:
+                meta_data['status'] = 200
+            else:
+                meta_data['status'] = 404
+
             result = {
                 'data': {name: data},
                 'module': module,

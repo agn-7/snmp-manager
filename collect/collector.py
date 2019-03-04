@@ -87,6 +87,7 @@ class SNMPReader(object):
                         data = float(var_bind[1])
                         data *= gain
                         data += offset
+
                     except ValueError:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
