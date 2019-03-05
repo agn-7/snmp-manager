@@ -40,7 +40,7 @@ class SNMPReader(object):
         servers = kwargs.get('servers', [{'name': 'default', 'ip': '127.0.0.1', 'port': 9001}])
         pipeline_ip = kwargs.get('pipeline_ip', '127.0.0.1')
         pipeline_port = kwargs.get('pipeline_port', 9001)
-        meta = kwargs.get('meta', {})
+        meta = kwargs.get('meta_data', {})
         gain = kwargs.get('gain', 1)
         offset = kwargs.get('offset', 0)
 
@@ -111,10 +111,13 @@ class SNMPReader(object):
 
         finally:
             result = {name: data}
+            meta_data = {}
+            for met in meta:  # TODO :: Check it.
+                meta_data.update(met)
 
             self.response.publish(
                 module=module,
-                meta_data=meta,
+                meta_data=meta_data,
                 servers=servers_obj,
                 **result
             )
