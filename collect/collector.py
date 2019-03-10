@@ -112,7 +112,7 @@ class SNMPReader(object):
         finally:
             result = {name: data}
             meta_data = {}
-            for met in meta:  # TODO :: Check it.
+            for met in meta:
                 meta_data.update(met)
 
             self.response.publish(

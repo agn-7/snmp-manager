@@ -48,7 +48,6 @@ class Response(object):
             print({name: data}, ' --> ', server['ip'], ':', server['port'])
 
             try:
-                # self.socket.send_json(result, flags=zmq.NOBLOCK)  # TODO
                 server['socket'].send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
