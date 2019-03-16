@@ -96,12 +96,14 @@ def get_config():
     try:
         if 'CONFIG_PATH' in os.environ:
             config_path = os.environ['CONFIG_PATH']
-        elif os.path.exists("/app/config.json"):
-            config_path = '/app/config.json'
+        elif os.path.exists("/app/config/config.json"):
+            config_path = '/app/config/config.json'
         elif os.path.exists("../config.json"):
             config_path = '../config.json'
         elif os.path.exists("config.json"):
             config_path = 'config.json'
+        elif os.path.exists("./config/config.json"):
+            config_path = './config/config.json'
         else:
             raise ValueError("Cannot find a config file!")
 
