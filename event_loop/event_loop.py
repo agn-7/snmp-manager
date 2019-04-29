@@ -116,8 +116,17 @@ class EventLoop(object):
         while True:
             configs = get_config()
             if configs:
-                futures = [loop.create_task(self.read_forever(loop, **conf))
-                           for conf in configs]
+                futures = []
+                for conf in configs:
+                    if conf['isEnable']:
+                        futures.append(loop.create_task(self.read_forever(loop, **conf)))
+
+                    else:
+                        info_ = f"{conf['name']} SNMP-Model is Disable."
+                        logger.info(info_)
+
+                # futures = [loop.create_task(self.read_forever(loop, **conf))
+                #            for conf in configs]
                 try:
                     loop.run_forever()
                     self.stop_auth(configs)
