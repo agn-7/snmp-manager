@@ -5,6 +5,7 @@ import os
 import traceback
 
 from utility.logger import Logging
+from pprint import pprint
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -86,15 +87,13 @@ class Getter(object):
                 if sock:
                     print('Before recv')
                     configs = sock.recv_json()
-                    from pprint import pprint
                     pprint(configs)
-                    '''Get the Battery-Monitoring json configs.'''
 
                     print('Configurations received.')
                     self.store_config_file(configs)
                     print('Config stored in the config.json file.')
 
-                    if method is 'REP':
+                    if method == 'REP':
                         sock.send_json({'status': 200})
 
                 else:
