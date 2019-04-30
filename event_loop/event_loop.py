@@ -123,7 +123,7 @@ class EventLoop(object):
 
                     else:
                         info_ = f"{conf['name']} SNMP-Model is Disable."
-                        logger.info(info_)
+                        logger.captureMessage(info_)
 
                 # futures = [loop.create_task(self.read_forever(loop, **conf))
                 #            for conf in configs]
