@@ -85,6 +85,20 @@ def add_socket(all_config):
     return all_config
 
 
+def parse_isEnable(configs):
+    """
+    Set isEnable=True to each parameter isEnable if its parent (SNMP device) isEnable equal to True
+    :param configs: SNMP configurations.
+    :return: Applied isEnable from SNMP device config to each SNMP parameters.
+    """
+    for conf in configs:
+        if not conf['isEnable']:
+            for metric in conf['metrics']:
+                metric['isEnable'] = False
+
+    return configs
+
+
 @MWT(timeout=7)
 def get_config():
     """
@@ -109,6 +123,7 @@ def get_config():
 
         with open(config_path) as json_file:
             configs = json.load(json_file)
+            configs = parse_isEnable(configs)
             configs = flatten(configs)
             configs = add_socket(configs)
             pprint(configs)
