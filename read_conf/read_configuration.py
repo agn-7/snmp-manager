@@ -36,8 +36,8 @@ def flatten(configs):
                     flatten_configs.append({})
                     for mk, mv in met.items():
                         last_index = len(flatten_configs) - 1
-                        flatten_configs[last_index][mk] = mv
                         flatten_configs[last_index].update(parent)
+                        flatten_configs[last_index][mk] = mv
 
     return flatten_configs
 
