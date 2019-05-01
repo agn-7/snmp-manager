@@ -87,7 +87,8 @@ def add_socket(all_config):
 
 def parse_isEnable(configs):
     """
-    Set isEnable=True to each parameter isEnable if its parent (SNMP device) isEnable equal to True
+    Set isEnable=False to each parameter isEnable if its parent (SNMP device) isEnable key ,equal
+    to False.
     :param configs: SNMP configurations.
     :return: Applied isEnable from SNMP device config to each SNMP parameters.
     """
