@@ -34,9 +34,10 @@ def flatten(configs):
             if key == 'metrics':
                 for met in conf[key]:
                     flatten_configs.append({})
+                    last_index = len(flatten_configs) - 1
+                    flatten_configs[last_index].update(parent)
+
                     for mk, mv in met.items():
-                        last_index = len(flatten_configs) - 1
-                        flatten_configs[last_index].update(parent)
                         flatten_configs[last_index][mk] = mv
 
     return flatten_configs
