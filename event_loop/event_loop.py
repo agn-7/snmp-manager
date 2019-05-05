@@ -45,10 +45,10 @@ class EventLoop(object):
         :param kwargs: The below parameters.
         :return:
         """
-        timeout = kwargs.get('timeout', 1)
-        retries = kwargs.get('retries', 3)
-        interval = kwargs.get('sleep_time', 3)
-        total_timeout = self.get_timeout(sleep=interval, timeout=(timeout * retries))
+        # timeout = kwargs.get('timeout', 1)
+        # retries = kwargs.get('retries', 3)
+        # interval = kwargs.get('sleep_time', 3)
+        # total_timeout = self.get_timeout(sleep=interval, timeout=(timeout * retries))
 
         while True:
             try:
