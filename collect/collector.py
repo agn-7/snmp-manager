@@ -18,7 +18,7 @@ class SNMPReader(object):
     """SNMP Collector."""
     def __init__(self):
         self.response = Response()
-        self.snmp_engine = SnmpEngine()
+        # self.snmp_engine = SnmpEngine()
 
     async def read_async_full(self, loop, **kwargs):
         """
@@ -57,7 +57,8 @@ class SNMPReader(object):
 
         try:
             error_indication, error_status, error_index, var_binds = await getCmd(
-                self.snmp_engine,
+                # self.snmp_engine,
+                SnmpEngine(),
                 CommunityData(community),
                 UdpTransportTarget(hostname, timeout=timeout, retries=retries),
                 ContextData(),
