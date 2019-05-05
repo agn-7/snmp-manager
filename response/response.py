@@ -52,7 +52,7 @@ class Response(object):
 
             except zmq.ZMQError as exc:
                 logger.captureMessage(
-                    f"Space if full >> {exc}"
+                    f"Space is full >> {exc}"
                 )
                 sleep(1)
 

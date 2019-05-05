@@ -52,12 +52,13 @@ class EventLoop(object):
 
         while True:
             try:
-                async with async_timeout.timeout(total_timeout) as cm:
-                    await self.snmp_reader.read_async_full(loop, **kwargs)
+                # async with async_timeout.timeout(total_timeout) as cm:
+                await self.snmp_reader.read_async_full(loop, **kwargs)
 
-            except asyncio.TimeoutError as exc:
-                # print(cm.expired, exc)
-                pass
+            # except asyncio.TimeoutError as exc:
+            #     print(1111)
+            #     print(cm.expired, exc)
+            #     pass
 
             except KeyboardInterrupt:
                 loop.close()
