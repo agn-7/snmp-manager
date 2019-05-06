@@ -55,68 +55,6 @@ class Getter(object):
             logger.captureMessage(exc)
             logger.captureException()
 
-    def always_listen_old(self, method='PULL'):  # TODO
-        """
-        Always listen to the ZMQ.SNDER from Django side to get the SNMP configuration then calling
-        the .store_config_file() method.
-        :return:
-        """
-        try:
-            context = zmq.Context()
-
-            if method == 'PULL':
-                sock = context.socket(zmq.PULL)
-
-            elif method == 'SUB':
-                sock = context.socket(zmq.SUB)
-                sock.setsockopt(zmq.SUBSCRIBE, b'')
-
-            elif method == 'REP':
-                sock = context.socket(zmq.REP)
-
-            else:
-                raise NotImplementedError()
-
-            # sock.setsockopt(zmq.RCVHWM, 1)
-            sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            print('The Listener Initialized.')
-            sock.bind("tcp://*:6669")
-
-            while True:
-                print('Waiting for json configs ...')
-
-                if sock:
-                    print('Before recv')
-                    configs = sock.recv_json()
-                    pprint(configs)
-                    '''Get the Battery-Monitoring json configs.'''
-
-                    print('Configurations received.')
-                    self.store_config_file(configs)
-                    print('Config stored in the config.json file.')
-
-                    if method is 'REP':
-                        sock.send_json({'status': 200})
-
-                else:
-                    print('An error occurred in ZMQ socket creation.')
-                    logger.captureMessage('An error occurred in ZMQ socket creation.')
-                    time.sleep(5)
-                    self.always_listen(method)  # Recursive.
-
-        except zmq.ZMQError as e:
-            if e.errno == zmq.EAGAIN:
-                logger.captureMessage('state changed since poll event')
-            else:
-                logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
-
-            time.sleep(5)
-            self.always_listen(method)  # Recursive.
-
-        except Exception:
-            logger.captureMessage(traceback.format_exc())
-            self.always_listen(method)  # Recursive.
-
     def always_listen(self, method='REP'):
         """
         Always Listen to the ZMQ from Django side to get the configuration then
@@ -153,6 +91,7 @@ class Getter(object):
 
                 # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
                 self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+                print('The Listener Initialized.')
                 self.socket_zmq.bind("tcp://*:6668")
 
             except zmq.ZMQError as e:
