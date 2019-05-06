@@ -73,40 +73,37 @@ class Getter(object):
                 self.get_zmq(method)
 
     def get_zmq(self, method='REP'):
-            try:
-                context = zmq.Context()
+        context = zmq.Context()
 
-                if method == 'PULL':
-                    self.socket_zmq = context.socket(zmq.PULL)
+        try:
+            if method == 'PULL':
+                self.socket_zmq = context.socket(zmq.PULL)
+            elif method == 'SUB':
+                self.socket_zmq = context.socket(zmq.SUB)
+                self.socket_zmq.setsockopt(zmq.SUBSCRIBE, b'')
+            elif method == 'REP':
+                self.socket_zmq = context.socket(zmq.REP)
+            else:
+                raise NotImplementedError()
 
-                elif method == 'SUB':
-                    self.socket_zmq = context.socket(zmq.SUB)
-                    self.socket_zmq.setsockopt(zmq.SUBSCRIBE, b'')
+            # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
+            self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+            self.socket_zmq.bind("tcp://*:6668")
+            print('The Listener Initialized.')
 
-                elif method == 'REP':
-                    self.socket_zmq = context.socket(zmq.REP)
+        except zmq.ZMQError as e:
+            if e.errno == zmq.EAGAIN:
+                logger.captureMessage('state changed since poll event')
+            else:
+                logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
 
-                else:
-                    raise NotImplementedError()
+            self.socket_zmq.close()
+            context.destroy()
+            time.sleep(5)
 
-                # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
-                self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-                print('The Listener Initialized.')
-                self.socket_zmq.bind("tcp://*:6668")
-
-            except zmq.ZMQError as e:
-                if e.errno == zmq.EAGAIN:
-                    logger.captureMessage('state changed since poll event')
-                else:
-                    logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
-
-                self.socket_zmq.close()
-                context.destroy()
-                time.sleep(5)
-
-            except Exception as exc:
-                print(exc)
-                logger.captureMessage(traceback.format_exc())
-                self.socket_zmq.close()
-                context.destroy()
-                time.sleep(5)
+        except Exception as exc:
+            print(exc)
+            logger.captureMessage(traceback.format_exc())
+            self.socket_zmq.close()
+            context.destroy()
+            time.sleep(5)
