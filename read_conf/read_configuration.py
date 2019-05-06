@@ -98,7 +98,7 @@ def add_snmp_engine(configs):
     return configs
 
 
-@MWT(timeout=7)
+# @MWT(timeout=7)
 def get_config():
     """
     Reading the stored SNMP Json configuration file.
