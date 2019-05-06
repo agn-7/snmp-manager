@@ -4,6 +4,7 @@ import zmq
 
 from pprint import pprint
 from easydict import EasyDict as edict
+from pysnmp.hlapi.asyncio import *
 
 from utility.logger import Logging
 from utility.utility import MWT
@@ -72,7 +73,7 @@ def add_socket(all_config):
     """
     Add socket key value to the servers in the configuration list of dict.
     :param all_config: Configuration.
-    :return: Updated configuration with socket key value the in servers key.
+    :return: Updated configuration with socket key value in servers key.
     """
     iport = make_unit_socket(all_config)
 
@@ -83,6 +84,18 @@ def add_socket(all_config):
             serv['auth'] = zmq_content[1]
 
     return all_config
+
+
+def add_snmp_engine(configs):
+    """
+    Add SNMP-Engine per each SNMP-Line or SNMP-Device.
+    :param configs: flatten SNMP configurations.
+    :return: Updated configuration with SNMP-Engine key value.
+    """
+    for conf in configs:
+        conf['engine'] = SnmpEngine()
+
+    return configs
 
 
 @MWT(timeout=7)
@@ -109,6 +122,7 @@ def get_config():
 
         with open(config_path) as json_file:
             configs = json.load(json_file)
+            configs = add_snmp_engine(configs)
             configs = flatten(configs)
             configs = add_socket(configs)
             pprint(configs)

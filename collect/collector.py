@@ -43,6 +43,7 @@ class SNMPReader(object):
         meta = kwargs.get('meta_data', {})
         gain = kwargs.get('gain', 1)
         offset = kwargs.get('offset', 0)
+        snmp_engine = kwargs.get('engine', None)
 
         servers_obj = [edict(server) for server in servers]
 
@@ -57,8 +58,9 @@ class SNMPReader(object):
 
         try:
             error_indication, error_status, error_index, var_binds = await getCmd(
-                # self.snmp_engine,
-                SnmpEngine(),
+                # self.snmp_engine,  # TODO
+                # SnmpEngine(),  # TODO
+                snmp_engine,
                 CommunityData(community),
                 UdpTransportTarget(hostname, timeout=timeout, retries=retries),
                 ContextData(),
