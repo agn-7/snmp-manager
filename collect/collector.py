@@ -58,8 +58,6 @@ class SNMPReader(object):
 
         try:
             error_indication, error_status, error_index, var_binds = await getCmd(
-                # self.snmp_engine,  # TODO
-                # SnmpEngine(),  # TODO
                 snmp_engine,
                 CommunityData(community),
                 UdpTransportTarget(hostname, timeout=timeout, retries=retries),

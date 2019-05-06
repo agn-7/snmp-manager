@@ -56,7 +56,6 @@ class EventLoop(object):
                 await self.snmp_reader.read_async_full(loop, **kwargs)
 
             # except asyncio.TimeoutError as exc:
-            #     print(1111)
             #     print(cm.expired, exc)
             #     pass
 
