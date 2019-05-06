@@ -55,7 +55,7 @@ class Getter(object):
             logger.captureMessage(exc)
             logger.captureException()
 
-    def always_listen(self, method='REP'):
+    def always_listen_old(self, method='REP'):
         """
         Always Listen to the ZMQ from Django side to get the configuration then
         calling .store_config_file() method.
@@ -72,43 +72,44 @@ class Getter(object):
             else:
                 self.get_zmq(method)
 
-    def get_zmq(self, method='REP'):
+    def get_zmq_old(self, method='REP'):
         context = zmq.Context()
+        while True:
+            try:
+                if method == 'PULL':
+                    self.socket_zmq = context.socket(zmq.PULL)
+                elif method == 'SUB':
+                    self.socket_zmq = context.socket(zmq.SUB)
+                    self.socket_zmq.setsockopt(zmq.SUBSCRIBE, b'')
+                elif method == 'REP':
+                    self.socket_zmq = context.socket(zmq.REP)
+                else:
+                    raise NotImplementedError()
 
-        try:
-            if method == 'PULL':
-                self.socket_zmq = context.socket(zmq.PULL)
-            elif method == 'SUB':
-                self.socket_zmq = context.socket(zmq.SUB)
-                self.socket_zmq.setsockopt(zmq.SUBSCRIBE, b'')
-            elif method == 'REP':
-                self.socket_zmq = context.socket(zmq.REP)
-            else:
-                raise NotImplementedError()
+                # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
+                self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+                self.socket_zmq.bind("tcp://*:6669")
+                print('The Listener Initialized.')
+                break
 
-            # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
-            self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            self.socket_zmq.bind("tcp://*:6669")
-            print('The Listener Initialized.')
+            except zmq.ZMQError as e:
+                if e.errno == zmq.EAGAIN:
+                    logger.captureMessage('state changed since poll event')
+                else:
+                    logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
 
-        except zmq.ZMQError as e:
-            if e.errno == zmq.EAGAIN:
-                logger.captureMessage('state changed since poll event')
-            else:
-                logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
+                self.socket_zmq.close()
+                context.destroy()
+                time.sleep(5)
 
-            self.socket_zmq.close()
-            context.destroy()
-            time.sleep(5)
+            except Exception as exc:
+                print(exc)
+                logger.captureMessage(traceback.format_exc())
+                self.socket_zmq.close()
+                context.destroy()
+                time.sleep(5)
 
-        except Exception as exc:
-            print(exc)
-            logger.captureMessage(traceback.format_exc())
-            self.socket_zmq.close()
-            context.destroy()
-            time.sleep(5)
-
-    def always_listen_new(self, method='REP'):
+    def always_listen(self, method='REP'):
         """
         Always Listen to the ZMQ from Django side to get the configuration then
         calling .store_config_file() method.
@@ -125,7 +126,7 @@ class Getter(object):
             else:
                 self.get_zmq()
 
-    def get_zmq_new(self):
+    def get_zmq(self):
         context = zmq.Context()
 
         try:
