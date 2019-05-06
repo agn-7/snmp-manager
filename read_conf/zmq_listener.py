@@ -99,6 +99,9 @@ class Getter(object):
                     logger.captureMessage('state changed since poll event')
                 else:
                     logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
+
+                self.socket_zmq.close()
+                context.destroy()
                 time.sleep(5)
 
             except Exception as exc:
