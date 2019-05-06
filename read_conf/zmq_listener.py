@@ -55,29 +55,24 @@ class Getter(object):
             logger.captureMessage(exc)
             logger.captureException()
 
-    def always_listen_old(self, method='REP'):
+    def always_listen(self, method='REP'):
         """
         Always Listen to the ZMQ from Django side to get the configuration then
         calling .store_config_file() method.
         :return:
         """
         while True:
-            try:
-                if self.socket_zmq:
-                    print("ZMQ is waiting ...")
-                    configs = self.socket_zmq.recv_json()
-                    pprint(configs)
-                    self.socket_zmq.send_json({'status': 200})
-                    self.store_config_file(configs)
+            if self.socket_zmq:
+                print("ZMQ is waiting ...")
+                configs = self.socket_zmq.recv_json()
+                pprint(configs)
+                self.socket_zmq.send_json({'status': 200})
+                self.store_config_file(configs)
 
-                else:
-                    self.get_zmq(method)
+            else:
+                self.get_zmq(method)
 
-            except Exception as exc:
-                print(exc)
-                logger.captureMessage(exc)
-
-    def get_zmq_old(self, method='REP'):
+    def get_zmq(self, method='REP'):
         context = zmq.Context()
 
         try:
@@ -93,7 +88,7 @@ class Getter(object):
 
             # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
             self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            self.socket_zmq.bind("tcp://*:6668")
+            self.socket_zmq.bind("tcp://*:6669")
             print('The Listener Initialized.')
 
         except zmq.ZMQError as e:
@@ -113,7 +108,7 @@ class Getter(object):
             context.destroy()
             time.sleep(5)
 
-    def always_listen(self, method='REP'):
+    def always_listen_new(self, method='REP'):
         """
         Always Listen to the ZMQ from Django side to get the configuration then
         calling .store_config_file() method.
@@ -130,12 +125,12 @@ class Getter(object):
             else:
                 self.get_zmq()
 
-    def get_zmq(self):
+    def get_zmq_new(self):
         context = zmq.Context()
 
         try:
             self.socket_zmq = context.socket(zmq.REP)
-            self.socket_zmq.bind("tcp://*:6668")
+            self.socket_zmq.bind("tcp://*:6669")
 
         except Exception as exc:
             print(exc)
