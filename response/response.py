@@ -45,14 +45,14 @@ class Response(object):
                 'tags': meta_data
             }
 
-            print({name: data}, ' --> ', server['ip'], ':', server['port'])
+            print({name: data}, ' ', result['time'], '-->', server['ip'], ':', server['port'])
 
             try:
                 server['socket'].send_json(result, flags=zmq.NOBLOCK)  # TODO
 
             except zmq.ZMQError as exc:
                 logger.captureMessage(
-                    f"Space if full >> {exc}"
+                    f"Space is full >> {exc}"
                 )
                 sleep(1)
 
