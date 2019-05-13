@@ -73,7 +73,7 @@ def add_socket(all_config):
     """
     Add socket key value to the servers in the configuration list of dict.
     :param all_config: Configuration.
-    :return: Updated configuration with socket key value the in servers key.
+    :return: Updated configuration with socket key value in servers key.
     """
     iport = make_unit_socket(all_config)
 

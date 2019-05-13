@@ -4,8 +4,9 @@ import json
 import os
 import traceback
 
-from utility.logger import Logging
 from pprint import pprint
+
+from utility.logger import Logging
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -54,63 +55,89 @@ class Getter(object):
             logger.captureMessage(exc)
             logger.captureException()
 
-    def always_listen(self, method='PULL'):
+    def always_listen_old(self, method='REP'):
         """
-        Always listen to the ZMQ.SNDER from Django side to get the SNMP configuration then calling
-        the .store_config_file() method.
+        Always Listen to the ZMQ from Django side to get the configuration then
+        calling .store_config_file() method.
         :return:
         """
-        try:
-            context = zmq.Context()
-
-            if method == 'PULL':
-                sock = context.socket(zmq.PULL)
-
-            elif method == 'SUB':
-                sock = context.socket(zmq.SUB)
-                sock.setsockopt(zmq.SUBSCRIBE, b'')
-
-            elif method == 'REP':
-                sock = context.socket(zmq.REP)
+        while True:
+            if self.socket_zmq:
+                print("ZMQ is waiting ...")
+                configs = self.socket_zmq.recv_json()
+                pprint(configs)
+                self.socket_zmq.send_json({'status': 200})
+                self.store_config_file(configs)
 
             else:
-                raise NotImplementedError()
+                self.get_zmq(method)
 
-            # sock.setsockopt(zmq.RCVHWM, 1)
-            sock.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-            print('The Listener Initialized.')
-            sock.bind("tcp://*:6669")
-
-            while True:
-                print('Waiting for json configs ...')
-
-                if sock:
-                    print('Before recv')
-                    configs = sock.recv_json()
-                    pprint(configs)
-
-                    print('Configurations received.')
-                    self.store_config_file(configs)
-                    print('Config stored in the config.json file.')
-
-                    if method == 'REP':
-                        sock.send_json({'status': 200})
-
+    def get_zmq_old(self, method='REP'):
+        context = zmq.Context()
+        while True:
+            try:
+                if method == 'PULL':
+                    self.socket_zmq = context.socket(zmq.PULL)
+                elif method == 'SUB':
+                    self.socket_zmq = context.socket(zmq.SUB)
+                    self.socket_zmq.setsockopt(zmq.SUBSCRIBE, b'')
+                elif method == 'REP':
+                    self.socket_zmq = context.socket(zmq.REP)
                 else:
-                    print('An error occurred in ZMQ socket creation.')
-                    logger.captureMessage('An error occurred in ZMQ socket creation.')
-                    time.sleep(5)
-                    self.always_listen(method)  # Recursive.
+                    raise NotImplementedError()
 
-        except zmq.ZMQError as e:
-            if e.errno == zmq.EAGAIN:
-                logger.captureMessage('state changed since poll event')
+                # self.socket_zmq.setsockopt(zmq.RCVHWM, 1)
+                self.socket_zmq.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+                self.socket_zmq.bind("tcp://*:6669")
+                print('The Listener Initialized.')
+                break
+
+            except zmq.ZMQError as e:
+                if e.errno == zmq.EAGAIN:
+                    logger.captureMessage('state changed since poll event')
+                else:
+                    logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
+
+                self.socket_zmq.close()
+                context.destroy()
+                time.sleep(5)
+
+            except Exception as exc:
+                print(exc)
+                logger.captureMessage(traceback.format_exc())
+                self.socket_zmq.close()
+                context.destroy()
+                time.sleep(5)
+
+    def always_listen(self, method='REP'):
+        """
+        Always Listen to the ZMQ from Django side to get the configuration then
+        calling .store_config_file() method.
+        :return:
+        """
+        while True:
+            if self.socket_zmq:
+                print("ZMQ is waiting ...")
+                configs = self.socket_zmq.recv_json()
+                pprint(configs)
+                self.socket_zmq.send_json({'status': 200})
+                self.store_config_file(configs)
+
             else:
-                logger.captureMessage("RECV Error: %s" % zmq.strerror(e.errno))
+                self.get_zmq()
+                print("The Listener Initialized.")
 
-            time.sleep(5)
-            self.always_listen(method)  # Recursive.
+    def get_zmq(self):
+        context = zmq.Context()
 
-        except Exception:
+        try:
+            self.socket_zmq = context.socket(zmq.REP)
+            self.socket_zmq.bind("tcp://*:6669")
+
+        except Exception as exc:
+            print(exc)
             logger.captureMessage(traceback.format_exc())
-            self.always_listen(method)  # Recursive.
+            self.socket_zmq.close()
+            context.destroy()
+            time.sleep(5)
+            self.get_zmq()

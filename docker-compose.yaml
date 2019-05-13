@@ -20,4 +20,7 @@ services:
         logging:
           driver: "json-file"
           options:
-            max-size: "50m"
+            max-size: "20m"
+
+        environment:
+          - SENTRY_DSN=http://78bb380df55444c584d010e0edfc3859@192.168.1.136/5

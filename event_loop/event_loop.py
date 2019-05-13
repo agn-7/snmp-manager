@@ -3,6 +3,7 @@ import uvloop
 import async_timeout
 import time
 import traceback
+import sys
 
 from utility.logger import Logging
 from read_conf.read_configuration import get_config
@@ -141,6 +142,7 @@ class EventLoop(object):
                 except asyncio.CancelledError:
                     logger.captureMessage('Tasks has been canceled')
                     loop.close()
+                    sys.exit(0)
 
                 except Exception:
                     logger.captureMessage(traceback.format_exc())
