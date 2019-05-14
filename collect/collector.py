@@ -30,6 +30,9 @@ class SNMPReader(object):
         """
         A SNMP collector which is fully asynchronous with asyncio methods.
         :param loop: asyncio loop.
+        :param community_data: SNMP community_data.
+        :param udp_transport_target: SNMP udp_transport_target.
+        :param object_type: SNMP object_type.
         :param kwargs: Below parameters.
         :return:
         """
@@ -76,11 +79,11 @@ class SNMPReader(object):
                 data = -8555
 
             elif error_status:
-                # logger.captureMessage(
-                #     f"{error_status.prettyPrint()} at "
-                #     f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
-                #
-                # )  # TODO
+                logger.captureMessage(
+                    f"{error_status.prettyPrint()} at "
+                    f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
+
+                )
                 print('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
@@ -98,7 +101,7 @@ class SNMPReader(object):
                     except ValueError:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
-                        # logger.captureMessage(str_error)  # TODO
+                        logger.captureMessage(str_error)
                         data = -8555
 
         except asyncio.CancelledError:
