@@ -35,10 +35,11 @@ def flatten(configs):
             if key == 'metrics':
                 for met in conf[key]:
                     flatten_configs.append({})
+                    last_index = len(flatten_configs) - 1
+                    flatten_configs[last_index].update(parent)
+
                     for mk, mv in met.items():
-                        last_index = len(flatten_configs) - 1
                         flatten_configs[last_index][mk] = mv
-                        flatten_configs[last_index].update(parent)
 
     return flatten_configs
 
@@ -86,6 +87,21 @@ def add_socket(all_config):
     return all_config
 
 
+def parse_isEnable(configs):
+    """
+    Set isEnable=False to each parameter isEnable if its parent (SNMP device) isEnable key ,equal
+    to False.
+    :param configs: SNMP configurations.
+    :return: Applied isEnable from SNMP device config to each SNMP parameters.
+    """
+    for conf in configs:
+        if not conf['isEnable']:
+            for metric in conf['metrics']:
+                metric['isEnable'] = False
+
+    return configs
+
+
 def add_snmp_engine(configs):
     """
     Add SNMP-Engine per each SNMP-Line or SNMP-Device.
@@ -122,6 +138,7 @@ def get_config():
 
         with open(config_path) as json_file:
             configs = json.load(json_file)
+            configs = parse_isEnable(configs)
             configs = add_snmp_engine(configs)
             configs = flatten(configs)
             configs = add_socket(configs)

@@ -125,7 +125,7 @@ class Getter(object):
 
             else:
                 self.get_zmq()
-                print('The Listener Initialized.')
+                print("The Listener Initialized.")
 
     def get_zmq(self):
         context = zmq.Context()
