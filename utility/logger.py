@@ -21,7 +21,7 @@ class Logging(object):
             return Client()
         else:
             return Client(
-                'http://78bb380df55444c584d010e0edfc3859@192.168.1.136/5'
+                'http://ad6aaf5ed24f4de5902db8daf653330d@192.168.1.136/6'
             )
 
     def init_sentry_with_level(self):
