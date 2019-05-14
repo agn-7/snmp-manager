@@ -5,6 +5,8 @@ import time
 import traceback
 import sys
 
+from pysnmp.hlapi.asyncio import *
+
 from utility.logger import Logging
 from read_conf.read_configuration import get_config
 from collect.collector import SNMPReader
@@ -46,15 +48,27 @@ class EventLoop(object):
         :param kwargs: The below parameters.
         :return:
         """
-        # timeout = kwargs.get('timeout', 1)
-        # retries = kwargs.get('retries', 3)
-        # interval = kwargs.get('sleep_time', 3)
-        # total_timeout = self.get_timeout(sleep=interval, timeout=(timeout * retries))
+        community = kwargs.get('community', 'public')
+        address = kwargs.get('address', '127.0.0.1')
+        port = kwargs.get('port', 161)
+        hostname = (address, port)
+        timeout = kwargs.get('timeout', 1)
+        retries = kwargs.get('retries', 3)
+        oid = kwargs.get('oid', '0.0.0.0.0.0')
+        version = kwargs.get('version', 1)
+
+        community_data = CommunityData(community)
+        udp_transport_target = UdpTransportTarget(hostname, timeout=timeout, retries=retries)
+        object_type = ObjectType(ObjectIdentity(oid))  # TODO :: Add SNMP version.
 
         while True:
             try:
                 # async with async_timeout.timeout(total_timeout) as cm:
-                await self.snmp_reader.read_async_full(loop, **kwargs)
+                await self.snmp_reader.read_async_full(
+                    loop,
+                    community_data, udp_transport_target, object_type,
+                    **kwargs
+                )
 
             # except asyncio.TimeoutError as exc:
             #     print(cm.expired, exc)

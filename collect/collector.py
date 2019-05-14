@@ -21,7 +21,12 @@ class SNMPReader(object):
         # self.snmp_engine = SnmpEngine()
         self.context_data = ContextData()
 
-    async def read_async_full(self, loop, **kwargs):
+    async def read_async_full(
+            self,
+            loop,
+            community_data, udp_transport_target, object_type,
+            **kwargs
+    ):
         """
         A SNMP collector which is fully asynchronous with asyncio methods.
         :param loop: asyncio loop.
@@ -32,7 +37,6 @@ class SNMPReader(object):
         name = kwargs.get('tag_name', 'Default Name')
         module = kwargs.get('name', 'SNMP Device')
         address = kwargs.get('address', 1)
-        community = kwargs.get('community', 'public')
         version = kwargs.get('version', 1)
         port = kwargs.get('port', 161)
         timeout = kwargs.get('timeout', 1)
@@ -54,16 +58,15 @@ class SNMPReader(object):
                 server.port = pipeline_port
 
         data = None
-        hostname = (address, port)
         tick = time.time()
 
         try:
             error_indication, error_status, error_index, var_binds = await getCmd(
                 snmp_engine,
-                CommunityData(community),
-                UdpTransportTarget(hostname, timeout=timeout, retries=retries),
+                community_data,
+                udp_transport_target,
                 self.context_data,
-                ObjectType(ObjectIdentity(oid))  # TODO :: Add SNMP version.
+                object_type
             )
 
             if error_indication:
