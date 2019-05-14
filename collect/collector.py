@@ -19,6 +19,7 @@ class SNMPReader(object):
     def __init__(self):
         self.response = Response()
         # self.snmp_engine = SnmpEngine()
+        self.context_data = ContextData()
 
     async def read_async_full(self, loop, **kwargs):
         """
@@ -61,22 +62,22 @@ class SNMPReader(object):
                 snmp_engine,
                 CommunityData(community),
                 UdpTransportTarget(hostname, timeout=timeout, retries=retries),
-                ContextData(),
+                self.context_data,
                 ObjectType(ObjectIdentity(oid))  # TODO :: Add SNMP version.
             )
 
             if error_indication:
                 str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                             f"{error_indication}"
-                logger.captureMessage(str_error)
+                # logger.captureMessage(str_error)  # TODO
                 data = -8555
 
             elif error_status:
-                logger.captureMessage(
-                    f"{error_status.prettyPrint()} at "
-                    f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
-
-                )
+                # logger.captureMessage(
+                #     f"{error_status.prettyPrint()} at "
+                #     f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
+                #
+                # )  # TODO
                 print('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
@@ -94,7 +95,7 @@ class SNMPReader(object):
                     except ValueError:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
-                        logger.captureMessage(str_error)
+                        # logger.captureMessage(str_error)  # TODO
                         data = -8555
 
         except asyncio.CancelledError:
