@@ -75,7 +75,8 @@ class SNMPReader(object):
             if error_indication:
                 str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                             f"{error_indication}"
-                # logger.captureMessage(str_error)  # TODO
+                # logger.captureMessage(str_error)  # TODO :: dangerous if it is flooding
+                print(str_error)
                 data = -8555
 
             elif error_status:
