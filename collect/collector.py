@@ -52,6 +52,7 @@ class SNMPReader(object):
         gain = kwargs.get('gain', 1)
         offset = kwargs.get('offset', 0)
         snmp_engine = kwargs.get('engine', None)
+        pk = kwargs.get('pk', 1)
 
         servers_obj = [edict(server) for server in servers]
 
@@ -123,6 +124,7 @@ class SNMPReader(object):
         finally:
             result = {name: data}
             meta_data = {}
+            meta_data.update({'pk': pk})
             for met in meta:
                 meta_data.update(met)
 
