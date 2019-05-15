@@ -124,7 +124,10 @@ class SNMPReader(object):
         finally:
             result = {name: data}
             meta_data = {}
-            meta_data.update({'pk': pk})
+
+            if data != -8555:
+                meta_data.update({'pk': pk})
+
             for met in meta:
                 meta_data.update(met)
 
