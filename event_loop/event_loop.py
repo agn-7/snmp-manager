@@ -111,11 +111,31 @@ class EventLoop(object):
             await asyncio.sleep(10)
 
     @staticmethod
-    def stop_auth(configs):
+    def stop_auth(auth):
+        """Stop ZAP"""
+        try:
+            auth.stop
+        except Exception as exc:
+            logger.captureMessage(exc)
+
+    @staticmethod
+    def destroy_snmp_engines(engine):
+        """
+        Destroy SNMP-Engine instance.
+        :param engine:
+        :return:
+        """
+        try:
+            engine.unregisterTransportDispatcher()
+        except Exception as exc:
+            logger.captureMessage(exc)
+
+    def termination(self, configs):
         for conf in configs:
+            self.destroy_snmp_engines(conf['engine'])
             for srv in conf['servers']:
                 try:
-                    srv['auth'].stop
+                    self.stop_auth(srv['auth'])
                 except Exception as exc:
                     logger.captureMessage(exc)
 
@@ -130,6 +150,7 @@ class EventLoop(object):
 
         while True:
             configs = get_config()
+
             if configs:
                 futures = []
                 for conf in configs:
@@ -140,23 +161,24 @@ class EventLoop(object):
                         info_ = f"{conf['name']} SNMP-Model is Disable."
                         logger.captureMessage(info_)
 
-                # futures = [loop.create_task(self.read_forever(loop, **conf))
-                #            for conf in configs]
                 try:
+                    '''Run'''
                     loop.run_forever()
-                    self.stop_auth(configs)
 
+                    '''Termination'''
+                    self.destroy_snmp_engines(configs)
+                    self.stop_auth(configs)
                     for f in futures:
                         f.cancel()
 
                 except KeyboardInterrupt:
                     logger.captureMessage("The process was killed.")
                     loop.close()
+                    sys.exit(0)
 
                 except asyncio.CancelledError:
                     logger.captureMessage('Tasks has been canceled')
                     loop.close()
-                    sys.exit(0)
 
                 except Exception:
                     logger.captureMessage(traceback.format_exc())
