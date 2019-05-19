@@ -5,6 +5,8 @@ import time
 import traceback
 import sys
 
+# from pysnmp.carrier.asyncio.dispatch import AsyncioDispatcher
+from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
 
 from utility.logger import Logging
@@ -127,10 +129,17 @@ class EventLoop(object):
         """
         try:
             engine.unregisterTransportDispatcher()
+
+        except PySnmpError as snmp_exc:
+            print(snmp_exc)
+
         except Exception as exc:
+            print(exc)
             logger.captureMessage(exc)
 
     def termination(self, configs):
+        """Destroy some expensive instances."""
+
         for conf in configs:
             self.destroy_snmp_engines(conf['engine'])
             for srv in conf['servers']:
@@ -166,10 +175,9 @@ class EventLoop(object):
                     loop.run_forever()
 
                     '''Termination'''
-                    self.destroy_snmp_engines(configs)
-                    self.stop_auth(configs)
                     for f in futures:
                         f.cancel()
+                    self.termination(configs)
 
                 except KeyboardInterrupt:
                     logger.captureMessage("The process was killed.")
