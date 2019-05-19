@@ -22,6 +22,8 @@ class Utility(object):
 
         if 'CONFIG_PATH' in os.environ:
             config_path = os.environ['CONFIG_PATH']
+        elif os.path.exists('./config/' + path):
+            config_path = './config/' + path
         elif os.path.exists(path):
             config_path = path
         elif os.path.exists("../" + path):
