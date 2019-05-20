@@ -5,7 +5,6 @@ import time
 import traceback
 import sys
 
-# from pysnmp.carrier.asyncio.dispatch import AsyncioDispatcher
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
 
@@ -128,6 +127,7 @@ class EventLoop(object):
         :return:
         """
         try:
+            engine.transportDispatcher.closeDispatcher()
             engine.unregisterTransportDispatcher()
 
         except PySnmpError as snmp_exc:
