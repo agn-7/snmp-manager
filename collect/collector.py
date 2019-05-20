@@ -53,6 +53,7 @@ class SNMPReader(object):
         offset = kwargs.get('offset', 0)
         snmp_engine = kwargs.get('engine', None)
         pk = kwargs.get('pk', 1)
+        device_pk = kwargs.get('device_pk', 1)
 
         servers_obj = [edict(server) for server in servers]
 
@@ -128,6 +129,7 @@ class SNMPReader(object):
 
             if data != -8555:
                 meta_data.update({'pk': pk})
+                meta_data.update({'device_pk': device_pk})
 
             for met in meta:
                 meta_data.update(met)
