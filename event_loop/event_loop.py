@@ -127,7 +127,7 @@ class EventLoop(object):
         :return:
         """
         try:
-            engine.transportDispatcher.closeDispatcher()
+            # engine.transportDispatcher.closeDispatcher()
             engine.unregisterTransportDispatcher()
 
         except PySnmpError as snmp_exc:
