@@ -103,7 +103,8 @@ class SNMPReader(object):
                     except ValueError:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
-                        logger.captureMessage(str_error)
+                        print(str_error)
+                        # logger.captureMessage(str_error)  # TODO :: dangerous if it is flooding
                         data = -8555
 
         except asyncio.CancelledError:
