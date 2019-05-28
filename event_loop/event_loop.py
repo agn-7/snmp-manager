@@ -4,6 +4,7 @@ import async_timeout
 import time
 import traceback
 import sys
+import gc
 
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
@@ -137,16 +138,27 @@ class EventLoop(object):
             print(exc)
             logger.captureMessage(exc)
 
-    def termination(self, configs):
-        """Destroy some expensive instances."""
+    def termination(self, configs, futures):
+        """
+        Destroy some expensive instances: Stop ZAP, Destroy SNMP-Engines, Destroy Zombie
+        coroutine Asyncio tasks and clear other memory usage by Python GC.
+        :param configs: SNMP configuration
+        :param futures: Asyncio coroutine tasks.
+        :return:
+        """
+        for f in futures:
+            f.cancel()
 
         for conf in configs:
             self.destroy_snmp_engines(conf['engine'])
+
             for srv in conf['servers']:
                 try:
                     self.stop_auth(srv['auth'])
                 except Exception as exc:
                     logger.captureMessage(exc)
+
+        gc.collect()  # TODO
 
     def run_forever(self):
         """Forever event-loop with the loop re-starter ability in asyncio tech."""
@@ -175,9 +187,7 @@ class EventLoop(object):
                     loop.run_forever()
 
                     '''Termination'''
-                    for f in futures:
-                        f.cancel()
-                    self.termination(configs)
+                    self.termination(configs, futures)
 
                 except KeyboardInterrupt:
                     logger.captureMessage("The process was killed.")
