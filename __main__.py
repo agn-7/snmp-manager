@@ -32,4 +32,5 @@ if __name__ == "__main__":
         SNMP().main()
 
     except KeyboardInterrupt:
-        pass
+        import sys
+        sys.exit(0)
