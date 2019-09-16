@@ -59,10 +59,9 @@ class EventLoop(object):
         oid = kwargs.get('oid', '0.0.0.0.0.0')
         version = kwargs.get('version', 1)
 
-        community_data = CommunityData(community)
+        community_data = CommunityData(community, mpModel=version-1)
         udp_transport_target = UdpTransportTarget(hostname, timeout=timeout, retries=retries)
-        object_type = ObjectType(ObjectIdentity(oid))  # TODO :: Add SNMP version.
-
+        object_type = ObjectType(ObjectIdentity(oid))
         while True:
             try:
                 # async with async_timeout.timeout(total_timeout) as cm:
