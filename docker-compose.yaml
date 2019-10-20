@@ -11,6 +11,7 @@ services:
           - 6669:6669
         expose:
           - 9001
+          - 9898
 
         volumes:
           - /etc/localtime:/etc/localtime:ro
