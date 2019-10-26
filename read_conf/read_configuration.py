@@ -1,19 +1,13 @@
 import json
 import os
-import zmq
 
 from pprint import pprint
-from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
 
-from utility.logger import Logging
 from utility.utility import MWT
-from zmq_tools import create_zmq
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
-
-logger = Logging().sentry_logger()
 
 
 def flatten(configs):
@@ -42,50 +36,6 @@ def flatten(configs):
                         flatten_configs[last_index][mk] = mv
 
     return flatten_configs
-
-
-def make_unit_socket(all_config):
-    """
-    Make unit socket per each IP+Port
-    :param all_config: Configuration.
-    :return: A dict which is contain to IP+Port key and unit socket value.
-    """
-    iport = {}
-    for conf in all_config:
-        for serv in conf['servers']:
-            iport[f"{serv['ip']}:{serv['port']}"] = create_zmq.CreateZMQ().get_zmq_client(
-                zmq.PUB, serv['ip'], serv['port']
-            )
-
-    return iport
-
-
-def find_its_socket(iport_str, **iport_dict):
-    """
-    Find the desired socket per each IP+Port.
-    :param iport_str: IP+Port
-    :param iport_dict: A dict which is contain to IP+Port key and unit socket value.
-    :return: Desired socket.
-    """
-    return iport_dict.get(iport_str)
-
-
-def add_socket(all_config):
-    """
-    Add socket key value to the servers in the configuration list of dict.
-    :param all_config: Configuration.
-    :return: Updated configuration with socket key value in servers key.
-    """
-    iport = make_unit_socket(all_config)
-
-    for conf in all_config:
-        for serv in conf['servers']:
-            zmq_content = find_its_socket(f"{serv['ip']}:{serv['port']}", **iport)
-            serv['socket'] = zmq_content[0]
-            '''ZAP.'''
-            serv['auth'] = zmq_content[1]
-
-    return all_config
 
 
 def parse_isEnable(configs):
@@ -142,12 +92,10 @@ def get_config():
             configs = parse_isEnable(configs)
             configs = add_snmp_engine(configs)
             configs = flatten(configs)
-            configs = add_socket(configs)
             pprint(configs)
 
     except (KeyError, IOError, FileNotFoundError, Exception) as exc:
-        logger.captureMessage(exc)
-        logger.captureException()
+        print(exc)
 
     return configs
 

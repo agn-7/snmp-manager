@@ -9,15 +9,12 @@ import gc
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
 
-from utility.logger import Logging
 from read_conf.read_configuration import get_config
 from collect.collector import SNMPReader
 from utility.utility import Utility
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
-
-logger = Logging().sentry_logger()
 
 
 class EventLoop(object):
@@ -117,7 +114,7 @@ class EventLoop(object):
         try:
             auth.stop
         except Exception as exc:
-            logger.captureMessage(exc)
+            print(exc)
 
     @staticmethod
     def destroy_snmp_engines(engine):
@@ -135,7 +132,6 @@ class EventLoop(object):
 
         except Exception as exc:
             print(exc)
-            logger.captureMessage(exc)
 
     def termination(self, configs, futures):
         """
@@ -155,7 +151,7 @@ class EventLoop(object):
                 try:
                     self.stop_auth(srv['auth'])
                 except Exception as exc:
-                    logger.captureMessage(exc)
+                    print(exc)
 
         gc.collect()  # TODO
 
@@ -179,7 +175,7 @@ class EventLoop(object):
 
                     else:
                         info_ = f"{conf['name']} SNMP-Model is Disable."
-                        logger.captureMessage(info_)
+                        print(info_)
 
                 try:
                     '''Run'''
@@ -189,20 +185,20 @@ class EventLoop(object):
                     self.termination(configs, futures)
 
                 except KeyboardInterrupt:
-                    logger.captureMessage("The process was killed.")
+                    print("The process was killed.")
                     loop.close()
                     sys.exit(0)
 
                 except asyncio.CancelledError:
-                    logger.captureMessage('Tasks has been canceled')
+                    print('Tasks has been canceled.')
                     loop.close()
 
                 except Exception:
-                    logger.captureMessage(traceback.format_exc())
+                    print(traceback.format_exc())
 
             else:
                 time.sleep(5)
-                logger.captureMessage("Waiting for SNMP configuration ...")
+                print("Waiting for SNMP configuration ...")
 
 
 if __name__ == '__main__':

@@ -1,7 +1,5 @@
 pyserial
 easydict
-pyzmq
 pysnmp==4.4.9
 uvloop
-raven
 async-timeout

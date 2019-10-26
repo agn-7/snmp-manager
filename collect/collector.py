@@ -2,16 +2,12 @@ import asyncio
 import time
 import traceback
 
-from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
 
 from response.response import Response
-from utility.logger import Logging
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
-
-logger = Logging().sentry_logger()
 
 
 class SNMPReader(object):
@@ -45,25 +41,13 @@ class SNMPReader(object):
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 3)
-        servers = kwargs.get('servers', [{'name': 'default', 'ip': '127.0.0.1', 'port': 9001}])
-        pipeline_ip = kwargs.get('pipeline_ip', '127.0.0.1')
-        pipeline_port = kwargs.get('pipeline_port', 9001)
         meta = kwargs.get('meta_data', {})
         gain = kwargs.get('gain', 1)
         offset = kwargs.get('offset', 0)
         snmp_engine = kwargs.get('engine', None)
-        pk = kwargs.get('pk', 1)
-        device_pk = kwargs.get('device_pk', 1)
-
-        servers_obj = [edict(server) for server in servers]
-
-        if pipeline_ip != '127.0.0.1':
-            for server in servers_obj:
-                server.ip = pipeline_ip
-                server.port = pipeline_port
 
         data = None
-        tick = time.time()
+        tic = time.time()
 
         try:
             error_indication, error_status, error_index, var_binds = await getCmd(
@@ -77,16 +61,10 @@ class SNMPReader(object):
             if error_indication:
                 str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                             f"{error_indication}"
-                # logger.captureMessage(str_error)  # TODO :: dangerous if it is flooding
                 print(str_error)
                 data = -8555
 
             elif error_status:
-                logger.captureMessage(
-                    f"{error_status.prettyPrint()} at "
-                    f"{error_index and var_binds[int(error_index) - 1][0] or '?'}"
-
-                )
                 print('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
@@ -105,7 +83,6 @@ class SNMPReader(object):
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
                         print(str_error)
-                        # logger.captureMessage(str_error)  # TODO :: dangerous if it is flooding
                         data = -8555
 
         except asyncio.CancelledError:
@@ -113,21 +90,11 @@ class SNMPReader(object):
             raise asyncio.CancelledError()
 
         except Exception:
-            logger.captureMessage(
-                "IP : {} - NAME : {} - OID : {} >> {}".format(
-                    address,
-                    name,
-                    oid,
-                    traceback.format_exc()
-                )
-            )
             data = -8555
 
         finally:
             result = {name: data}
             meta_data = {}
-            meta_data.update({'pk': pk})
-            meta_data.update({'device_pk': device_pk})
 
             for met in meta:
                 meta_data.update(met)
@@ -135,13 +102,12 @@ class SNMPReader(object):
             self.response.publish(
                 module=module,
                 meta_data=meta_data,
-                servers=servers_obj,
                 **result
             )
-            tack = time.time() - tick
+            toc = time.time() - tic
 
             if interval >= (retries * timeout):
-                await asyncio.sleep(interval - tack)
+                await asyncio.sleep(interval - toc)
 
             else:
                 await asyncio.sleep(interval)
