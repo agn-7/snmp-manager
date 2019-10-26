@@ -9,7 +9,7 @@ services:
         restart: unless-stopped
         ports:
           - 6669:6669
-          - 9898:9898
+#          - 9898:9898
 #        expose:
 #          - 9001
 #          - 9898
