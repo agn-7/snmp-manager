@@ -1,10 +1,16 @@
 import asyncio
-import uvloop
 import async_timeout
 import time
 import traceback
 import sys
 import gc
+
+try:
+    import uvloop
+    _uvloop = True
+except:
+    '''To avoid error in Windows platform.'''
+    _uvloop = False
 
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
@@ -78,8 +84,9 @@ class EventLoop(object):
     def run_once(self):
         """Run once method in asyncio tech."""
 
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-        '''Set the uvloop event loop policy.'''
+        if _uvloop:
+            asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+            '''Set the uvloop event loop policy.'''
 
         loop = asyncio.get_event_loop()
         configs = get_config()
@@ -158,8 +165,9 @@ class EventLoop(object):
     def run_forever(self):
         """Forever event-loop with the loop re-starter ability in asyncio tech."""
 
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-        '''Set the uvloop event loop policy.'''
+        if _uvloop:
+            asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+            '''Set the uvloop event loop policy.'''
 
         loop = asyncio.get_event_loop()
         loop.create_task(self.restart_loop())

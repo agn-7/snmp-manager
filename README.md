@@ -27,3 +27,8 @@ nano config/cofig.json
 ```bash
 python __main__.py
 ```
+
+---
+[**NOTE**]:
+
+ - If you are a Windows user you don't want to use from docker, comment out the `uvlopp` package form `requirements.txt`
