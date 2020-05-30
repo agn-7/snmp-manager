@@ -31,4 +31,4 @@ python __main__.py
 ---
 [**NOTE**]:
 
- - If you are a Windows user you don't want to use from docker, comment out the `uvloop` package form `requirements.txt`
+ - If you are a Windows user and you don't want to use docker, comment out the `uvloop` package form `requirements.txt`
