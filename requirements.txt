@@ -1,5 +1,6 @@
 pyserial
 easydict
 pysnmp==4.4.9
-uvloop
 async-timeout
+
+uvloop
