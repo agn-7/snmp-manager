@@ -1,9 +1,12 @@
-## **1. Clone project from the Git-Server:**
+# SNMP collector through an asyncio loop
+
+## **1. Clone project**
 
 ```bash
 git clone <project address>
 ```
-## 2. Up and build its docker container:
+
+## 2. Up and build docker container:
 ```bash
 docker-compose up --build
 ```
