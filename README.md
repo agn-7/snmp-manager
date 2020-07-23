@@ -8,7 +8,7 @@ git clone <project address>
 
 ## 2. Up and build docker container:
 ```bash
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 ## 3. Using without docker:
