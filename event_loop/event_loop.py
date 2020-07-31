@@ -210,4 +210,11 @@ class EventLoop(object):
 
 
 if __name__ == '__main__':
-    EventLoop().run_forever()
+    print('SNMP Begins')
+
+    try:
+        EventLoop().run_forever()
+
+    except KeyboardInterrupt:
+        import sys
+        sys.exit(0)

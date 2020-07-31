@@ -3,3 +3,5 @@
 __pycache__/
 config.json*
 *.json
+/build
+/dist

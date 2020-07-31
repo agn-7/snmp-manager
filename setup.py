@@ -9,7 +9,7 @@ setup(
     author='agn-7',
     author_email='benyaminjmf@gmail.com',
     license='MIT',
-    packages=['simple_snmp_collector'],
+    packages=['event_loop'],
     keywords=[
         'snmp',
         'snmp-collector',
