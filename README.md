@@ -1,17 +1,13 @@
-# SNMP collector through an asyncio loop
+# SNMP collector through an Asyncio event loop
 
-## **1. Clone project**
+## Setup using docker
 
-```bash
-git clone <project address>
-```
-
-## 2. Up and build docker container:
+### Up and build docker container:
 ```bash
 docker-compose up --build -d
 ```
 
-## 3. Using without docker:
+## Without docker:
 
 ### Install requirements: 
 
@@ -19,16 +15,18 @@ docker-compose up --build -d
 pip install -r requirements.txt
 ```
 
-### Config your desire configuration:
-
-```bash
-nano config/cofig.json
-```
-
 ### Run:
 
 ```bash
 python __main__.py
+```
+
+## Configuration
+
+### Config your desire OID(s) ane metrics: 
+
+```bash
+nano config/cofig.json
 ```
 
 ---
