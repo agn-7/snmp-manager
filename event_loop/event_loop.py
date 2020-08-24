@@ -4,6 +4,8 @@ import time
 import traceback
 import sys
 import gc
+import argparse
+import os
 
 try:
     import uvloop
@@ -211,10 +213,15 @@ class EventLoop(object):
 
 if __name__ == '__main__':
     print('SNMP Begins')
+    parser = argparse.ArgumentParser(description='Simple SNMP Collector.')
 
     try:
+        parser.add_argument('--config', type=str, help='SNMP Configuration JSON path.')
+        args = parser.parse_args()
+        if args.config is not None:
+            os.environ["CONFIG_PATH"] = args.config
+
         EventLoop().run_forever()
 
     except KeyboardInterrupt:
-        import sys
         sys.exit(0)
