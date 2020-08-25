@@ -211,7 +211,7 @@ class EventLoop(object):
                 print("Waiting for SNMP configuration ...")
 
 
-if __name__ == '__main__':
+def run():
     print('SNMP Begins')
     parser = argparse.ArgumentParser(description='Simple SNMP Collector.')
 
@@ -225,3 +225,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         sys.exit(0)
+
+
+if __name__ == '__main__':
+    run()

@@ -1,14 +1,14 @@
 import sys
 
-from setuptools import setup
-from event_loop import __version__
+from setuptools import setup, find_packages
+from snmp_collector import __version__
 
 
 if sys.version_info[0] < 3:
-    with open('README.md') as f:
+    with open('README.rst') as f:
         long_description = f.read()
 else:
-    with open('README.md', encoding='utf-8') as f:
+    with open('README.rst', encoding='utf-8') as f:
         long_description = f.read()
 
 
@@ -21,7 +21,7 @@ setup(
     author='agn-7',
     author_email='benyaminjmf@gmail.com',
     license='MIT',
-    packages=['event_loop'],
+    packages=find_packages(),
     keywords=[
         'snmp',
         'snmp-collector',
@@ -31,7 +31,7 @@ setup(
         'docker',
         'docker-compose'
     ],
-    download_url='https://github.com/agn-7/simple-snmp-collector/archive/1.0.0-rc1.zip',
+    download_url='https://github.com/agn-7/simple-snmp-collector/archive/1.0.0.zip',
     install_requires=[
         'pyserial',
         'easydict',

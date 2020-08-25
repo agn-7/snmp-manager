@@ -15,18 +15,55 @@ docker-compose up --build -d
 pip install -r requirements.txt
 ```
 
-### Run:
+### Run by downloading or cloning the repository:
 
 ```bash
 python __main__.py
 ```
 
-## Configuration
-
-### Config your desire OID(s) ane metrics: 
+### Config your desire OID(s) and metrics: 
 
 ```bash
 nano config/cofig.json
+```
+
+## Setup through `pip`
+
+```bash
+pip install simple-snmp-collector pyserial easydict pysnmp==4.4.9 async-timeout uvloop
+```
+### Configuration
+
+Create a json config file with the following format:
+
+```
+[
+  {
+    "isEnable": true,
+    "name": "snmp-model-1",
+    "address": "192.168.1.120",
+    "port": 161,
+    "timeout": 1,
+    "retries": 3,
+    "version": 2,
+    "sleep_time": 5,
+    "community": "public",
+    "metrics": [
+      {
+        "isEnable": true,
+        "tag_name": "a-sample",
+        "oid": "1.3.6.13.4.1.3.1112"
+      }
+    ],
+    "meta_data": [{'key': 'value'}]
+  }
+]
+``` 
+
+### Run
+
+```bash
+python -m snmp_collector --config=<path-to-your-config-file.json>
 ```
 
 ---
