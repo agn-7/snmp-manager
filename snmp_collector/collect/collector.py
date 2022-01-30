@@ -51,8 +51,6 @@ class SNMPReader(object):
         name = kwargs.get('tag_name', 'Default Name')
         module = kwargs.get('name', 'SNMP Device')
         address = kwargs.get('address', 1)
-        version = kwargs.get('version', 1)
-        port = kwargs.get('port', 161)
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 3)
@@ -106,7 +104,7 @@ class SNMPReader(object):
                         data = value
 
                     try:
-                        data = float(data)  # For inserting to influxdb
+                        data = float(data)
                         data *= gain
                         data += offset
 
