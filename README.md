@@ -1,4 +1,4 @@
-# SNMP collector through an Asyncio event loop
+# SNMP collector powered by Asyncio
 
 ## Setup using docker
 
