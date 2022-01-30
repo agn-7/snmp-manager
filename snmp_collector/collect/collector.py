@@ -1,7 +1,9 @@
 import asyncio
 import time
 import traceback
+import struct
 
+from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
 
 from response.response import Response
@@ -9,13 +11,26 @@ from response.response import Response
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
 
-
 class SNMPReader(object):
     """SNMP Collector."""
     def __init__(self):
         self.response = Response()
         # self.snmp_engine = SnmpEngine()
         self.context_data = ContextData()
+
+    @staticmethod
+    def cast(value):
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                try:
+                    return str(value)
+                except (ValueError, TypeError) as exc:
+                    print(exc)
+        return -8555
 
     async def read_async_full(
             self,
@@ -75,11 +90,27 @@ class SNMPReader(object):
             else:
                 for var_bind in var_binds:
                     try:
-                        data = float(var_bind[1])
+                        '''var_bind[0] is oid and var_bind[1] is its raw value.'''
+                        value = self.cast(var_bind[1])
+                        unpacked = struct.unpack('>BBBf', value.encode('latin1'))
+                        if unpacked[:3] == (159, 120, 4):
+                            '''Checking if data is Opaque or not.'''
+
+                            data = unpacked[-1]
+                        else:
+                            data = value
+                    except AttributeError:
+                        data = value
+                    except Exception as exc:
+                        print(exc)
+                        data = value
+
+                    try:
+                        data = float(data)  # For inserting to influxdb
                         data *= gain
                         data += offset
 
-                    except ValueError:
+                    except ValueError:  # TODO :: You can enhance this section for string.
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
                         print(str_error)
@@ -111,4 +142,3 @@ class SNMPReader(object):
 
             else:
                 await asyncio.sleep(interval)
-
