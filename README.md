@@ -1,5 +1,7 @@
 # SNMP collector powered by Asyncio
 
+Collecting data from SNMP Agents using `python-asyncio` method.
+
 ## Setup using docker
 
 ### Up and build docker container:
