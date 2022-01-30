@@ -2,16 +2,16 @@
 
 Collecting data from SNMP Agents using `python-asyncio` method.
 
-## Setup using docker
+### Setup using docker
 
-### Up and build docker container:
+Up and build docker container:
 ```bash
 docker-compose up --build -d
 ```
 
-## Without docker:
+### Setup Without docker:
 
-### Install requirements: 
+Install requirements: 
 
 ```bash
 pip install -r requirements.txt
