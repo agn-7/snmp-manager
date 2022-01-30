@@ -1,4 +1,4 @@
-# SNMP collector powered by Asyncio
+# SNMP Collector Powered by Asyncio
 
 Collecting data from SNMP Agents using `python-asyncio` method.
 
