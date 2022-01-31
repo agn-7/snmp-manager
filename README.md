@@ -17,24 +17,24 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
-### Run by downloading or cloning the repository:
+Configure the desire OID(s) and metrics: 
 
 ```bash
-python __main__.py
+nano snmp_collector/config/cofig.json
 ```
 
-### Config your desire OID(s) and metrics: 
+Run:
 
 ```bash
-nano config/cofig.json
+python snmp_collector
 ```
 
-## Setup through `pip`
+### Setup through `pip`
 
 ```bash
-pip install simple-snmp-collector pyserial easydict pysnmp==4.4.9 async-timeout uvloop
+pip install snmp-manager
 ```
-### Configuration
+Configuration:
 
 Create a json config file with the following format:
 
@@ -49,6 +49,8 @@ Create a json config file with the following format:
     "retries": 3,
     "version": 2,
     "sleep_time": 5,
+    "gain": 1,
+    "offset": 0,
     "community": "public",
     "metrics": [
       {
@@ -62,10 +64,10 @@ Create a json config file with the following format:
 ]
 ``` 
 
-### Run
+Run:
 
 ```bash
-python -m snmp_collector --config=<path-to-your-config-file.json>
+python snmp_collector --config=<path-to-your-config-file.json>
 ```
 
 ---
