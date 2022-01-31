@@ -5,8 +5,11 @@ import struct
 
 from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
+from colored_print import ColoredPrint
 
 from response.response import Response
+
+log = ColoredPrint()
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -74,11 +77,11 @@ class SNMPReader(object):
             if error_indication:
                 str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                             f"{error_indication}"
-                print(str_error)
+                log.err(str_error)
                 data = -8555
 
             elif error_status:
-                print('%s at %s' % (
+                log.err('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
                 )
@@ -115,7 +118,7 @@ class SNMPReader(object):
                     except Exception:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
-                        print(str_error)
+                        log.err(str_error)
                         data = -8555
 
         except asyncio.CancelledError:
@@ -123,7 +126,7 @@ class SNMPReader(object):
             raise asyncio.CancelledError()
 
         except Exception as exc:
-            print(exc)
+            log.err(exc)
             data = -8555
 
         finally:
