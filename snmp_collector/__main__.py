@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .event_loop import run
+from event_loop import run
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"

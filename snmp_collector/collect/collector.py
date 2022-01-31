@@ -100,15 +100,19 @@ class SNMPReader(object):
                     except AttributeError:
                         data = value
                     except Exception as exc:
-                        print(exc)
+                        # print(exc)
                         data = value
 
                     try:
-                        data = float(data)
-                        data *= gain
-                        data += offset
+                        if not isinstance(data, str):
+                            '''integer'''
+                            data *= gain
+                            data += offset
+                        else:
+                            '''string'''
+                            pass
 
-                    except ValueError:  # TODO :: You can enhance this section for string.
+                    except Exception:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
                         print(str_error)
@@ -118,7 +122,8 @@ class SNMPReader(object):
             data = -8555
             raise asyncio.CancelledError()
 
-        except Exception:
+        except Exception as exc:
+            print(exc)
             data = -8555
 
         finally:
