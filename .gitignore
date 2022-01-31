@@ -5,4 +5,4 @@ config.json*
 *.json
 /build
 /dist
-simple_snmp_collector.egg-info/
+snmp_manager.egg-info/
