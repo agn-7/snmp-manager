@@ -67,7 +67,7 @@ Create a json config file with the following format:
 Run:
 
 ```bash
-python snmp_collector --config=<path-to-your-config-file.json>
+python -m snmp_collector --config=<path-to-your-config-file.json>
 ```
 
 ---
