@@ -32,7 +32,7 @@ setup(
         'docker',
         'docker-compose'
     ],
-    download_url='https://github.com/agn-7/snmp-manager/archive/1.0.0.zip',
+    download_url='https://github.com/agn-7/snmp-manager/archive/1.1.2.zip',
     install_requires=[
         'pyserial==3.5',
         'easydict==1.9',
