@@ -34,10 +34,11 @@ setup(
     ],
     download_url='https://github.com/agn-7/snmp-manager/archive/1.0.0.zip',
     install_requires=[
-        'pyserial',
-        'easydict',
-        'pysnmp==4.4.9',
-        'async-timeout'
+        'pyserial==3.5',
+        'easydict==1.9',
+        'pysnmp==4.4.12',
+        'async-timeout==3.0.1',
+        'uvloop==0.15.2'
     ],
     classifiers=[
         'Programming Language :: Python :: 3.6',
