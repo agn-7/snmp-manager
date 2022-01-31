@@ -2,5 +2,6 @@ pyserial
 easydict
 pysnmp==4.4.9
 async-timeout
+python-colored-print 
 
 uvloop

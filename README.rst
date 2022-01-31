@@ -1,22 +1,22 @@
 
-SNMP collector through an Asyncio event loop
-============================================
+SNMP Collector Powered by Asyncio
+=================================
+
+Collecting data from SNMP Agents using ``python-asyncio`` method.
 
 Setup using docker
-------------------
+^^^^^^^^^^^^^^^^^^
 
 Up and build docker container:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
    docker-compose up --build -d
 
-Without docker:
----------------
-
-Install requirements:
+Setup Without docker:
 ^^^^^^^^^^^^^^^^^^^^^
+
+Install requirements: 
 
 .. code-block:: bash
 

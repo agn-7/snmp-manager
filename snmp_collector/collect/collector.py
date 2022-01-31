@@ -1,14 +1,18 @@
 import asyncio
 import time
 import traceback
+import struct
 
+from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
+from colored_print import ColoredPrint
 
 from response.response import Response
 
+log = ColoredPrint()
+
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
-
 
 class SNMPReader(object):
     """SNMP Collector."""
@@ -16,6 +20,20 @@ class SNMPReader(object):
         self.response = Response()
         # self.snmp_engine = SnmpEngine()
         self.context_data = ContextData()
+
+    @staticmethod
+    def cast(value):
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                try:
+                    return str(value)
+                except (ValueError, TypeError) as exc:
+                    print(exc)
+        return -8555
 
     async def read_async_full(
             self,
@@ -36,8 +54,6 @@ class SNMPReader(object):
         name = kwargs.get('tag_name', 'Default Name')
         module = kwargs.get('name', 'SNMP Device')
         address = kwargs.get('address', 1)
-        version = kwargs.get('version', 1)
-        port = kwargs.get('port', 161)
         timeout = kwargs.get('timeout', 1)
         retries = kwargs.get('retries', 3)
         interval = kwargs.get('sleep_time', 3)
@@ -61,11 +77,11 @@ class SNMPReader(object):
             if error_indication:
                 str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                             f"{error_indication}"
-                print(str_error)
+                log.err(str_error)
                 data = -8555
 
             elif error_status:
-                print('%s at %s' % (
+                log.err('%s at %s' % (
                     error_status.prettyPrint(),
                     error_index and var_binds[int(error_index) - 1][0] or '?'
                 )
@@ -75,21 +91,42 @@ class SNMPReader(object):
             else:
                 for var_bind in var_binds:
                     try:
-                        data = float(var_bind[1])
-                        data *= gain
-                        data += offset
+                        '''var_bind[0] is oid and var_bind[1] is its raw value.'''
+                        value = self.cast(var_bind[1])
+                        unpacked = struct.unpack('>BBBf', value.encode('latin1'))
+                        if unpacked[:3] == (159, 120, 4):
+                            '''Checking if data is Opaque or not.'''
 
-                    except ValueError:
+                            data = unpacked[-1]
+                        else:
+                            data = value
+                    except AttributeError:
+                        data = value
+                    except Exception as exc:
+                        # print(exc)
+                        data = value
+
+                    try:
+                        if not isinstance(data, str):
+                            '''integer'''
+                            data *= gain
+                            data += offset
+                        else:
+                            '''string'''
+                            pass
+
+                    except Exception:
                         str_error = f"tag_name: {name} - OID: {oid} - IP: {address} \n " \
                                     f"{traceback.format_exc()}"
-                        print(str_error)
+                        log.err(str_error)
                         data = -8555
 
         except asyncio.CancelledError:
             data = -8555
             raise asyncio.CancelledError()
 
-        except Exception:
+        except Exception as exc:
+            log.err(exc)
             data = -8555
 
         finally:
@@ -111,4 +148,3 @@ class SNMPReader(object):
 
             else:
                 await asyncio.sleep(interval)
-

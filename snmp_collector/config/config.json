@@ -1,0 +1,44 @@
+[
+  {
+    "isEnable": true,
+    "name": "string-1",
+    "address": "192.168.100.4",
+    "port": 161,
+    "timeout": 1,
+    "retries": 3,
+    "version": 2,
+    "sleep_time": 5,
+    "gain": 1,
+    "offset": 0,
+    "community": "public",
+    "metrics": [
+      {
+        "isEnable": true,
+        "tag_name": "string",
+        "oid": ".1.3.6.1.2.1.1.5.0"
+      }
+    ],
+    "meta_data": []
+  },
+  {
+    "isEnable": true,
+    "name": "number-1",
+    "address": "192.168.100.4",
+    "port": 161,
+    "timeout": 1,
+    "retries": 3,
+    "version": 2,
+    "sleep_time": 5,
+    "gain": 1,
+    "offset": 0,
+    "community": "public",
+    "metrics": [
+      {
+        "isEnable": true,
+        "tag_name": "number",
+        "oid": ".1.3.6.1.2.1.2.2.1.1.10501"
+      }
+    ],
+    "meta_data": []
+  }
+]

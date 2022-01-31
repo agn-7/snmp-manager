@@ -1,4 +1,7 @@
 from datetime import datetime
+from colored_print import ColoredPrint
+
+log = ColoredPrint()
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -35,7 +38,7 @@ class Response(object):
                 'tags': meta_data
             }
 
-            print({name: data}, ' ', result['time'])
+            log.success({name: data}, ' ', result['time'])
 
     def publish(
             self,
