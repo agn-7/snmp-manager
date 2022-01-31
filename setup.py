@@ -13,7 +13,7 @@ else:
 
 
 setup(
-    name='simple_snmp_collector',
+    name='snmp_manager',
     version=__version__,
     description='SNMP collector through an asyncio loop',
     long_description=long_description,
@@ -25,13 +25,14 @@ setup(
     keywords=[
         'snmp',
         'snmp-collector',
+        'snmp-manager'
         'asyncio',
         'python3',
         'python',
         'docker',
         'docker-compose'
     ],
-    download_url='https://github.com/agn-7/simple-snmp-collector/archive/1.0.0.zip',
+    download_url='https://github.com/agn-7/snmp-manager/archive/1.0.0.zip',
     install_requires=[
         'pyserial',
         'easydict',
