@@ -37,8 +37,7 @@ setup(
         'pyserial==3.5',
         'easydict==1.9',
         'pysnmp==4.4.12',
-        'async-timeout==3.0.1',
-        'uvloop==0.15.2'
+        'async-timeout==3.0.1'
     ],
     classifiers=[
         'Programming Language :: Python :: 3.6',
