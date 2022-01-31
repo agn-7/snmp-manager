@@ -16,10 +16,18 @@ except:
 
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
+from colored_print import ColoredPrint
 
-from read_conf.read_configuration import get_config
-from collect.collector import SNMPReader
-from utility.utility import Utility
+try:
+    from snmp_collector.read_conf.read_configuration import get_config
+    from snmp_collector.collect.collector import SNMPReader
+    from snmp_collector.utility.utility import Utility
+except:
+    from read_conf.read_configuration import get_config
+    from collect.collector import SNMPReader
+    from utility.utility import Utility
+
+log = ColoredPrint()
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -208,7 +216,7 @@ class EventLoop(object):
 
             else:
                 time.sleep(5)
-                print("Waiting for SNMP configuration ...")
+                log.info("Waiting for SNMP configuration ...")
 
 
 def run():

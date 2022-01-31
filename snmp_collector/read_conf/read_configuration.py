@@ -3,8 +3,14 @@ import os
 
 from pprint import pprint
 from pysnmp.hlapi.asyncio import *
+from colored_print import ColoredPrint
 
-from utility.utility import MWT
+try:
+    from snmp_collector.utility.utility import MWT
+except:
+    from utility.utility import MWT
+    
+log = ColoredPrint()
 
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
@@ -84,6 +90,8 @@ def get_config():
             config_path = 'config.json'
         elif os.path.exists("./config/config.json"):
             config_path = './config/config.json'
+        elif os.path.exists("./snmp_collector/config/config.json"):
+            config_path = './snmp_collector/config/config.json'  
         else:
             raise ValueError("Cannot find a config file!")
 
@@ -95,7 +103,7 @@ def get_config():
             pprint(configs)
 
     except (KeyError, IOError, FileNotFoundError, Exception) as exc:
-        print(exc)
+        log.err(exc)
 
     return configs
 

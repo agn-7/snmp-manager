@@ -1,6 +1,10 @@
 import time
 import os
 
+from colored_print import ColoredPrint
+
+log = ColoredPrint()
+
 __author__ = 'aGn'
 __copyright__ = "Copyright 2018, Planet Earth"
 
@@ -20,6 +24,8 @@ class Utility(object):
             config_path = os.environ['CONFIG_PATH']
         elif os.path.exists('./config/' + path):
             config_path = './config/' + path
+        elif os.path.exists('./snmp_collector/config/' + path):
+            config_path = './snmp_collector/config/' + path
         elif os.path.exists(path):
             config_path = path
         elif os.path.exists("../" + path):
@@ -27,7 +33,7 @@ class Utility(object):
         elif os.path.exists("../../" + path):
             config_path = "../../" + path
         else:
-            print("Cannot find a config file!")
+            log.err("Cannot find a config file!")
 
         if config_path is not None:
             stamp = os.stat(config_path).st_mtime

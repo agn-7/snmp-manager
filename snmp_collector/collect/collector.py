@@ -7,7 +7,10 @@ from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
 from colored_print import ColoredPrint
 
-from response.response import Response
+try:
+    from snmp_collector.response.response import Response
+except:
+    from response.response import Response
 
 log = ColoredPrint()
 
