@@ -1,3 +1,10 @@
+[![PyPi version](https://badgen.net/pypi/v/snmp-manager/)](https://pypi.org/project/snmp-manager/)
+[![PyPi license](https://badgen.net/pypi/license/snmp-manager/)](https://pypi.com/project/snmp-manager/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/snmp-manager.svg)](https://pypi.python.org/pypi/snmp-manager/)
+[![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
+
+
+
 # SNMP Collector Powered by Asyncio
 
 Collecting data from SNMP Agents using `python-asyncio` method.
