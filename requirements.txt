@@ -4,3 +4,5 @@ pysnmp==4.4.9
 async-timeout
 python-colored-print 
 coverage
+pytest==6.2
+pytest-cov==3.0.0
