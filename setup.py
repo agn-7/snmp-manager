@@ -17,7 +17,7 @@ setup(
     version=__version__,
     description='SNMP collector through an asyncio loop',
     long_description=long_description,
-    url='https://github.com/agn-7/simple-snmp-collector',
+    url='https://github.com/agn-7/snmp-manager',
     author='agn-7',
     author_email='benyaminjmf@gmail.com',
     license='MIT',
