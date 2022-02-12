@@ -16,27 +16,27 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
-  Coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run tests and collect coverage
-        run: |
-          coverage run tests/test.py
-          coverage xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-
-        with:
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos
+#  Coverage:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#      - name: Set up Python 3.9
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.9
+#      - name: Install dependencies
+#        run: pip install -r requirements.txt
+#      - name: Run tests and collect coverage
+#        run: |
+#          coverage run tests/test.py
+#          coverage xml
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v2
+#
+#        with:
+#          fail_ci_if_error: true
+#          token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos
 
 
   build:
@@ -44,7 +44,6 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -65,3 +64,6 @@ jobs:
       - name: Test with pytest
         run: |
           pytest tests/test.py
+      - name: Test with pytest coverage
+        run: |
+          pytest tests/test.py --cov-report term-missing --cov=snmp_collector
