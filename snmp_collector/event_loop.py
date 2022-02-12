@@ -91,13 +91,29 @@ class EventLoop(object):
         configs = get_config()
 
         if configs:
-            futures = [asyncio.ensure_future(self.snmp_reader.read_async_full(loop, **conf))
-                       for conf in configs]
+            for conf in configs:
+                hostname = (conf['address'], conf['port'])
+                community_data = CommunityData(
+                    conf['community'],
+                    mpModel=conf['version']-1
+                )
+                udp_transport_target = UdpTransportTarget(
+                    hostname,
+                    timeout=conf['timeout'], retries=conf['retries']
+                )
+                object_type = ObjectType(ObjectIdentity(conf['oid']))
+                futures = [asyncio.ensure_future(
+                    self.snmp_reader.read_async_full(
+                        loop, community_data, udp_transport_target, object_type,
+                        **conf)
+                )]
+
             result = loop.run_until_complete(asyncio.gather(*futures))
             print(result)
+            return True
 
         else:
-            raise NotImplementedError()
+            return False
 
     async def restart_loop(self):
         """An asynchronous loop re-starter worker to monitor the change in the config file."""
