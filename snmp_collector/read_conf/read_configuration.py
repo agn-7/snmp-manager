@@ -91,7 +91,9 @@ def get_config():
         elif os.path.exists("./config/config.json"):
             config_path = './config/config.json'
         elif os.path.exists("./snmp_collector/config/config.json"):
-            config_path = './snmp_collector/config/config.json'  
+            config_path = './snmp_collector/config/config.json'
+        elif os.path.exists("../snmp_collector/config/config.json"):
+            config_path = '../snmp_collector/config/config.json'
         else:
             raise ValueError("Cannot find a config file!")
 
