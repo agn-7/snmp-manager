@@ -67,3 +67,4 @@ jobs:
       - name: Test with pytest coverage
         run: |
           pytest tests/test.py --cov-report term-missing --cov=snmp_collector
+          pytest tests/test.py --cov=./ --cov-report=xml
