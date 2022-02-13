@@ -13,14 +13,9 @@ else:
 
 
 setup(
-    name='snmp_manager',
     version=__version__,
     description='SNMP collector through an asyncio loop',
     long_description=long_description,
-    url='https://github.com/agn-7/snmp-manager',
-    author='agn-7',
-    author_email='benyaminjmf@gmail.com',
-    license='MIT',
     packages=find_packages(),
     keywords=[
         'snmp',
@@ -39,7 +34,10 @@ setup(
         'pysnmp>=4',
         'async-timeout>=3'
     ],
-    classifiers=[
-        'Programming Language :: Python :: 3.6, 3.7, 3.8, 3.9',
-    ],
+    # classifiers=[
+    #     'Programming Language :: Python :: 3.6',
+    #     'Programming Language :: Python :: 3.7',
+    #     'Programming Language :: Python :: 3.8',
+    #     'Programming Language :: Python :: 3.9'
+    # ],
 )
