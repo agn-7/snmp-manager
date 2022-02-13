@@ -1,4 +1,4 @@
-name: SNMP GitHub Actions
+name: Workflow for Pytest and Codecov snmp-manager
 on: [push, pull_request]
 jobs:
   Explore-GitHub-Actions:
@@ -64,7 +64,12 @@ jobs:
       - name: Test with pytest
         run: |
           pytest tests/test.py
-      - name: Test with pytest coverage
+      - name:  Code Coverage
         run: |
           pytest tests/test.py --cov-report term-missing --cov=snmp_collector
           pytest tests/test.py --cov=./ --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        # with:
+        #   fail_ci_if_error: true
+        #   token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos      
