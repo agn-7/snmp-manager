@@ -1,4 +1,30 @@
 
+
+.. image:: https://badgen.net/pypi/v/snmp-manager/
+   :target: https://pypi.org/project/snmp-manager/
+   :alt: PyPi version
+
+
+.. image:: https://badgen.net/pypi/license/snmp-manager/
+   :target: https://pypi.com/project/snmp-manager/
+   :alt: PyPi license
+
+
+.. image:: https://img.shields.io/pypi/pyversions/snmp-manager.svg
+   :target: https://pypi.python.org/pypi/snmp-manager/
+   :alt: PyPI pyversions
+
+
+.. image:: https://badgen.net/badge/icon/docker?icon=docker&label
+   :target: https://https://docker.com/
+   :alt: Docker
+
+
+.. image:: https://codecov.io/gh/agn-7/snmp-manager/branch/master/graph/badge.svg?style=flat-square
+   :target: https://codecov.io/gh/agn-7/snmp-manager
+   :alt: codecov
+ 
+
 SNMP Collector Powered by Asyncio
 =================================
 
