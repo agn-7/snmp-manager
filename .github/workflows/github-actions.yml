@@ -1,4 +1,4 @@
-name: Workflow for Pytest and Codecov snmp-manager
+name: build
 on: [push, pull_request]
 jobs:
   Explore-GitHub-Actions:
