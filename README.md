@@ -2,6 +2,7 @@
 [![PyPi license](https://badgen.net/pypi/license/snmp-manager/)](https://pypi.com/project/snmp-manager/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/snmp-manager.svg)](https://pypi.python.org/pypi/snmp-manager/)
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
+[![build](https://github.com/agn-7/snmp-manager/workflows/build/badge.svg)](https://github.com/agn-7/snmp-manager/actions/workflows/github-actions.yml)
 [![codecov](https://codecov.io/gh/agn-7/snmp-manager/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/agn-7/snmp-manager) 
 
 
