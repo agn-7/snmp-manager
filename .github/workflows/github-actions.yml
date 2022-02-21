@@ -66,7 +66,6 @@ jobs:
           pytest tests/test.py
       - name:  Code Coverage
         run: |
-          pytest tests/test.py --cov-report term-missing --cov=snmp_collector
           pytest tests/test.py --cov=./snmp_collector --cov-report=xml --cov-report=term-missing 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
