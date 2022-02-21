@@ -7,10 +7,6 @@ from snmp_collector.event_loop import EventLoop
 
 
 class TestCase:
-    @pytest.mark.timeout(10)
-    def endless(self):
-        EventLoop().run_forever()
-
     @pytest.mark.parametrize("test_case", ['none'])
     def test_events(self, test_case: list):
         assert EventLoop().run_once()
