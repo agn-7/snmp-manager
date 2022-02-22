@@ -60,5 +60,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Lint with black
-      - uses: actions/checkout@v2
-      - uses: psf/black@stable
+        uses: actions/checkout@v2
+        uses: psf/black@stable
