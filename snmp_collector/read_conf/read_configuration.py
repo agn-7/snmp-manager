@@ -9,10 +9,10 @@ try:
     from snmp_collector.utility.utility import MWT
 except:
     from utility.utility import MWT
-    
+
 log = ColoredPrint()
 
-__author__ = 'aGn'
+__author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"
 
 
@@ -32,7 +32,7 @@ def flatten(configs):
                 parent[key] = val
 
         for key, val in conf.items():
-            if key == 'metrics':
+            if key == "metrics":
                 for met in conf[key]:
                     flatten_configs.append({})
                     last_index = len(flatten_configs) - 1
@@ -52,9 +52,9 @@ def parse_isEnable(configs):
     :return: Applied isEnable from SNMP device config to each SNMP parameters.
     """
     for conf in configs:
-        if not conf['isEnable']:
-            for metric in conf['metrics']:
-                metric['isEnable'] = False
+        if not conf["isEnable"]:
+            for metric in conf["metrics"]:
+                metric["isEnable"] = False
 
     return configs
 
@@ -66,7 +66,7 @@ def add_snmp_engine(configs):
     :return: Updated configuration with SNMP-Engine key value.
     """
     for conf in configs:
-        conf['engine'] = SnmpEngine()
+        conf["engine"] = SnmpEngine()
 
     return configs
 
@@ -80,20 +80,20 @@ def get_config():
     configs = None
 
     try:
-        if 'CONFIG_PATH' in os.environ:
-            config_path = os.environ['CONFIG_PATH']
+        if "CONFIG_PATH" in os.environ:
+            config_path = os.environ["CONFIG_PATH"]
         elif os.path.exists("/app/config/config.json"):
-            config_path = '/app/config/config.json'
+            config_path = "/app/config/config.json"
         elif os.path.exists("../config.json"):
-            config_path = '../config.json'
+            config_path = "../config.json"
         elif os.path.exists("config.json"):
-            config_path = 'config.json'
+            config_path = "config.json"
         elif os.path.exists("./config/config.json"):
-            config_path = './config/config.json'
+            config_path = "./config/config.json"
         elif os.path.exists("./snmp_collector/config/config.json"):
-            config_path = './snmp_collector/config/config.json'
+            config_path = "./snmp_collector/config/config.json"
         elif os.path.exists("../snmp_collector/config/config.json"):
-            config_path = '../snmp_collector/config/config.json'
+            config_path = "../snmp_collector/config/config.json"
         else:
             raise ValueError("Cannot find a config file!")
 
@@ -110,8 +110,8 @@ def get_config():
     return configs
 
 
-if __name__ == '__main__':
-    '''Test case usage.'''
+if __name__ == "__main__":
+    """Test case usage."""
     configs = get_config()
 
     for conf in configs:

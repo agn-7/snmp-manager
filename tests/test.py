@@ -7,11 +7,11 @@ from snmp_collector.event_loop import EventLoop
 
 
 class TestCase:
-    @pytest.mark.parametrize("test_case", ['none'])
+    @pytest.mark.parametrize("test_case", ["none"])
     def test_events(self, test_case: list):
         assert EventLoop().run_once()
 
-    @pytest.mark.parametrize("test_case", ['none'])
+    @pytest.mark.parametrize("test_case", ["none"])
     def test_events2(self, test_case: list):
         try:
             with timeout(10, exception=asyncio.CancelledError):
@@ -19,6 +19,7 @@ class TestCase:
                 assert False
         except:
             assert True
+
 
 if __name__ == "__main__":
     assert EventLoop().run_once()

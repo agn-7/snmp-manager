@@ -22,12 +22,13 @@ except:
 
 log = ColoredPrint()
 
-__author__ = 'aGn'
+__author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"
 
 
 class EventLoop(object):
     """AsyncIO EventLoop"""
+
     def __init__(self):
         self.loop = None
         self.snmp_reader = SNMPReader()
@@ -47,7 +48,7 @@ class EventLoop(object):
         else:
             total_time = max(sleep, timeout)
 
-        return total_time + .1  # TODO
+        return total_time + 0.1  # TODO
 
     async def read_forever(self, loop, **kwargs):
         """
@@ -56,25 +57,25 @@ class EventLoop(object):
         :param kwargs: The below parameters.
         :return:
         """
-        community = kwargs.get('community', 'public')
-        address = kwargs.get('address', '127.0.0.1')
-        port = kwargs.get('port', 161)
+        community = kwargs.get("community", "public")
+        address = kwargs.get("address", "127.0.0.1")
+        port = kwargs.get("port", 161)
         hostname = (address, port)
-        timeout = kwargs.get('timeout', 1)
-        retries = kwargs.get('retries', 3)
-        oid = kwargs.get('oid', '0.0.0.0.0.0')
-        version = kwargs.get('version', 1)
+        timeout = kwargs.get("timeout", 1)
+        retries = kwargs.get("retries", 3)
+        oid = kwargs.get("oid", "0.0.0.0.0.0")
+        version = kwargs.get("version", 1)
 
-        community_data = CommunityData(community, mpModel=version-1)
-        udp_transport_target = UdpTransportTarget(hostname, timeout=timeout, retries=retries)
+        community_data = CommunityData(community, mpModel=version - 1)
+        udp_transport_target = UdpTransportTarget(
+            hostname, timeout=timeout, retries=retries
+        )
         object_type = ObjectType(ObjectIdentity(oid))
         while True:
             try:
                 # async with async_timeout.timeout(total_timeout) as cm:
                 await self.snmp_reader.read_async_full(
-                    loop,
-                    community_data, udp_transport_target, object_type,
-                    **kwargs
+                    loop, community_data, udp_transport_target, object_type, **kwargs
                 )
 
             # except asyncio.TimeoutError as exc:
@@ -92,21 +93,25 @@ class EventLoop(object):
 
         if configs:
             for conf in configs:
-                hostname = (conf['address'], conf['port'])
+                hostname = (conf["address"], conf["port"])
                 community_data = CommunityData(
-                    conf['community'],
-                    mpModel=conf['version']-1
+                    conf["community"], mpModel=conf["version"] - 1
                 )
                 udp_transport_target = UdpTransportTarget(
-                    hostname,
-                    timeout=conf['timeout'], retries=conf['retries']
+                    hostname, timeout=conf["timeout"], retries=conf["retries"]
                 )
-                object_type = ObjectType(ObjectIdentity(conf['oid']))
-                futures = [asyncio.ensure_future(
-                    self.snmp_reader.read_async_full(
-                        loop, community_data, udp_transport_target, object_type,
-                        **conf)
-                )]
+                object_type = ObjectType(ObjectIdentity(conf["oid"]))
+                futures = [
+                    asyncio.ensure_future(
+                        self.snmp_reader.read_async_full(
+                            loop,
+                            community_data,
+                            udp_transport_target,
+                            object_type,
+                            **conf,
+                        )
+                    )
+                ]
 
             result = loop.run_until_complete(asyncio.gather(*futures))
             print(result)
@@ -125,7 +130,7 @@ class EventLoop(object):
 
             if stamp != cache:
                 cache = stamp
-                print('Loop will be restarted.')
+                print("Loop will be restarted.")
                 loop.stop()
 
             await asyncio.sleep(10)
@@ -167,11 +172,11 @@ class EventLoop(object):
             f.cancel()
 
         for conf in configs:
-            self.destroy_snmp_engines(conf['engine'])
+            self.destroy_snmp_engines(conf["engine"])
 
-            for srv in conf['servers']:
+            for srv in conf["servers"]:
                 try:
-                    self.stop_auth(srv['auth'])
+                    self.stop_auth(srv["auth"])
                 except Exception as exc:
                     print(exc)
 
@@ -179,7 +184,7 @@ class EventLoop(object):
 
     def run_forever(self):
         """Forever event-loop with the loop re-starter ability in asyncio tech."""
-        
+
         loop = asyncio.get_event_loop()
         loop.create_task(self.restart_loop())
 
@@ -189,18 +194,20 @@ class EventLoop(object):
             if configs:
                 futures = []
                 for conf in configs:
-                    if conf['isEnable']:
-                        futures.append(loop.create_task(self.read_forever(loop, **conf)))
+                    if conf["isEnable"]:
+                        futures.append(
+                            loop.create_task(self.read_forever(loop, **conf))
+                        )
 
                     else:
                         info_ = f"{conf['name']} SNMP-Model is Disable."
                         print(info_)
 
                 try:
-                    '''Run'''
+                    """Run"""
                     loop.run_forever()
 
-                    '''Termination'''
+                    """Termination"""
                     self.termination(configs, futures)
 
                 except KeyboardInterrupt:
@@ -209,7 +216,7 @@ class EventLoop(object):
                     sys.exit(0)
 
                 except asyncio.CancelledError:
-                    print('Tasks has been canceled.')
+                    print("Tasks has been canceled.")
                     loop.close()
 
                 except Exception:
@@ -221,11 +228,11 @@ class EventLoop(object):
 
 
 def run():
-    print('SNMP Begins')
-    parser = argparse.ArgumentParser(description='Simple SNMP Collector.')
+    print("SNMP Begins")
+    parser = argparse.ArgumentParser(description="Simple SNMP Collector.")
 
     try:
-        parser.add_argument('--config', type=str, help='SNMP Configuration JSON path.')
+        parser.add_argument("--config", type=str, help="SNMP Configuration JSON path.")
         args = parser.parse_args()
         if args.config is not None:
             os.environ["CONFIG_PATH"] = args.config
@@ -236,5 +243,5 @@ def run():
         sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

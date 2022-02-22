@@ -5,12 +5,13 @@ from colored_print import ColoredPrint
 
 log = ColoredPrint()
 
-__author__ = 'aGn'
+__author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"
 
 
 class Utility(object):
     """Utility tools class."""
+
     def __init__(self):
         pass
 
@@ -20,12 +21,12 @@ class Utility(object):
         stamp = 0
         path = "config.json"
 
-        if 'CONFIG_PATH' in os.environ:
-            config_path = os.environ['CONFIG_PATH']
-        elif os.path.exists('./config/' + path):
-            config_path = './config/' + path
-        elif os.path.exists('./snmp_collector/config/' + path):
-            config_path = './snmp_collector/config/' + path
+        if "CONFIG_PATH" in os.environ:
+            config_path = os.environ["CONFIG_PATH"]
+        elif os.path.exists("./config/" + path):
+            config_path = "./config/" + path
+        elif os.path.exists("./snmp_collector/config/" + path):
+            config_path = "./snmp_collector/config/" + path
         elif os.path.exists(path):
             config_path = path
         elif os.path.exists("../" + path):
@@ -43,6 +44,7 @@ class Utility(object):
 
 class MWT(object):
     """Memoize With Timeout CACHE as a decorator"""
+
     _caches = {}
     _timeouts = {}
 

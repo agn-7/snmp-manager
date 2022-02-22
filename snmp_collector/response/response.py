@@ -3,20 +3,18 @@ from colored_print import ColoredPrint
 
 log = ColoredPrint()
 
-__author__ = 'aGn'
+__author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"
 
 
 class Response(object):
     """Response Class"""
+
     def __init__(self):
         self.socket = None
 
     @staticmethod
-    def publisher(
-            module, meta_data,
-            **kwargs
-    ):
+    def publisher(module, meta_data, **kwargs):
         """
         Packing Json file in order to sending on ZMQ pipeline.
         :param module:
@@ -26,25 +24,21 @@ class Response(object):
         """
         for name, data in kwargs.items():
             if data != -8555:
-                meta_data['status'] = 200
+                meta_data["status"] = 200
             else:
-                meta_data['status'] = 404
+                meta_data["status"] = 404
 
             result = {
-                'data': {name: data},
-                'module': module,
-                'time': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                'station': 'SNMP',
-                'tags': meta_data
+                "data": {name: data},
+                "module": module,
+                "time": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                "station": "SNMP",
+                "tags": meta_data,
             }
 
-            log.success({name: data}, ' ', result['time'])
+            log.success({name: data}, " ", result["time"])
 
-    def publish(
-            self,
-            module, meta_data,
-            **kwargs
-    ):
+    def publish(self, module, meta_data, **kwargs):
         """
         Call the publisher method to send the result on the subscriber servers by ZMQ.
         :param module:
@@ -52,7 +46,4 @@ class Response(object):
         :param kwargs:
         :return:
         """
-        self.publisher(
-            module, meta_data,
-            **kwargs
-        )
+        self.publisher(module, meta_data, **kwargs)
