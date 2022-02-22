@@ -56,7 +56,7 @@ jobs:
         #   fail_ci_if_error: true
         #   token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos      
 
-  lint with black:
+  lint-with-black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
