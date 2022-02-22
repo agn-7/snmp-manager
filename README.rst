@@ -20,9 +20,19 @@
    :alt: Docker
 
 
+.. image:: https://github.com/agn-7/snmp-manager/workflows/build/badge.svg
+   :target: https://github.com/agn-7/snmp-manager/actions/workflows/github-actions.yml
+   :alt: build
+
+
 .. image:: https://codecov.io/gh/agn-7/snmp-manager/branch/master/graph/badge.svg?style=flat-square
    :target: https://codecov.io/gh/agn-7/snmp-manager
    :alt: codecov
+ 
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/ambv/black
+   :alt: black
  
 
 SNMP Collector Powered by Asyncio
