@@ -7,11 +7,9 @@ services:
         network_mode: "host"
         container_name: snmp_collector
         restart: unless-stopped
-
         volumes:
           - /etc/localtime:/etc/localtime:ro
           - ./config:/app/config
-
         logging:
           driver: "json-file"
           options:
