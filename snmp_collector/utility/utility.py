@@ -1,9 +1,7 @@
 import time
 import os
 
-from colored_print import ColoredPrint
-
-log = ColoredPrint()
+from colored_print import log
 
 __author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"

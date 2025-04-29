@@ -3,14 +3,12 @@ import os
 
 from pprint import pprint
 from pysnmp.hlapi.asyncio import *
-from colored_print import ColoredPrint
+from colored_print import log
 
 try:
     from snmp_collector.utility.utility import MWT
 except:
     from utility.utility import MWT
-
-log = ColoredPrint()
 
 __author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"

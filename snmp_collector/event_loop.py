@@ -9,7 +9,7 @@ import os
 
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.asyncio import *
-from colored_print import ColoredPrint
+from colored_print import log
 
 try:
     from snmp_collector.read_conf.read_configuration import get_config
@@ -19,8 +19,6 @@ except:
     from read_conf.read_configuration import get_config
     from collect.collector import SNMPReader
     from utility.utility import Utility
-
-log = ColoredPrint()
 
 __author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"

@@ -5,14 +5,12 @@ import struct
 
 from easydict import EasyDict as edict
 from pysnmp.hlapi.asyncio import *
-from colored_print import ColoredPrint
+from colored_print import log
 
 try:
     from snmp_collector.response.response import Response
 except:
     from response.response import Response
-
-log = ColoredPrint()
 
 __author__ = "aGn"
 __copyright__ = "Copyright 2018, Planet Earth"
